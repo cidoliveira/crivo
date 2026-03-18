@@ -6,6 +6,7 @@ from huggingface_hub import InferenceClient
 
 from app.config import get_settings
 from app.database import get_engine
+from app.extraction.router import router as extraction_router
 from app.health.routes import router as health_router
 
 
@@ -43,3 +44,4 @@ app.add_middleware(
 
 # Routers
 app.include_router(health_router)
+app.include_router(extraction_router)
