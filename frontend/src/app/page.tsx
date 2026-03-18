@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { EmailInput } from "@/components/email-input"
 
 function SunIcon() {
   return (
@@ -156,6 +157,11 @@ export default function DashboardPage() {
 
       {/* Main content */}
       <main className="mx-auto max-w-7xl px-6 py-8 flex flex-col gap-6">
+        {/* Email input section */}
+        <section className="max-w-2xl">
+          <EmailInput />
+        </section>
+
         {/* Top row: 4 metric cards */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCardSkeleton label="Total processado" />
