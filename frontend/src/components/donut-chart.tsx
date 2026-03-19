@@ -50,7 +50,7 @@ function CenterLabel({
         y={cy + 16}
         textAnchor="middle"
         dominantBaseline="middle"
-        style={{ fontSize: 12, fill: "#888" }}
+        style={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
       >
         Total
       </text>
@@ -88,7 +88,15 @@ export function DonutChart({ produtivo, improdutivo }: DonutChartProps) {
             )}
           />
         </Pie>
-        <Tooltip />
+        <Tooltip
+          contentStyle={{
+            background: "var(--color-card)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "8px",
+            color: "var(--color-foreground)",
+            fontSize: "12px",
+          }}
+        />
       </PieChart>
     </ResponsiveContainer>
   )

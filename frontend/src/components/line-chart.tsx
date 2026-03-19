@@ -29,15 +29,29 @@ export function ClassificationsLineChart({ data }: ClassificationsLineChartProps
   return (
     <ResponsiveContainer width="100%" height={220}>
       <LineChart data={data} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
         <XAxis
           dataKey="day"
           tickFormatter={formatDay}
-          tick={{ fontSize: 11 }}
+          tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+          axisLine={{ stroke: "var(--color-border)" }}
+          tickLine={{ stroke: "var(--color-border)" }}
         />
-        <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+        <YAxis
+          allowDecimals={false}
+          tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+          axisLine={{ stroke: "var(--color-border)" }}
+          tickLine={{ stroke: "var(--color-border)" }}
+        />
         <Tooltip
           labelFormatter={(label) => formatDay(String(label))}
+          contentStyle={{
+            background: "var(--color-card)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "8px",
+            color: "var(--color-foreground)",
+            fontSize: "12px",
+          }}
         />
         <Line
           type="monotone"
