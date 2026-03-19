@@ -22,6 +22,7 @@ import { MetricCard } from "@/components/metric-card"
 import { DonutChart } from "@/components/donut-chart"
 import { ClassificationsLineChart } from "@/components/line-chart"
 import { EmailsTable } from "@/components/emails-table"
+import { EmptyState } from "@/components/empty-state"
 import { BatchInput } from "@/components/batch-input"
 import { BatchResults } from "@/components/batch-results"
 import { useBatchClassify } from "@/hooks/use-batch-classify"
@@ -73,6 +74,7 @@ function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
+      className="size-10"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
     >
@@ -90,6 +92,9 @@ export default function DashboardPage() {
   const batch = useBatchClassify()
   const metrics = useMetrics()
   const emails = useEmails(page)
+
+  const scrollToClassify = () =>
+    document.getElementById("classify-section")?.scrollIntoView({ behavior: "smooth" })
 
   const handleClassify = () => {
     if (text.trim()) {
@@ -116,7 +121,7 @@ export default function DashboardPage() {
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-lg font-semibold tracking-tight">AutoU</span>
             <span className="text-xs text-muted-foreground hidden sm:inline">
@@ -136,9 +141,9 @@ export default function DashboardPage() {
       </header>
 
       {/* Main content */}
-      <main className="mx-auto max-w-7xl px-6 py-8 flex flex-col gap-6">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-col gap-6">
         {/* Email input section */}
-        <section className="max-w-2xl">
+        <section id="classify-section" className="max-w-2xl">
           {/* Mode toggle */}
           <div className="flex gap-2 mb-4">
             <Button
@@ -246,6 +251,16 @@ export default function DashboardPage() {
           )}
         </section>
 
+        {metrics.isSuccess && metrics.data && total === 0 && (
+          <div className="-mt-2">
+            <EmptyState
+              title="Sem dados no painel"
+              description="Comece classificando um email para ver suas metricas"
+              action={{ label: "Classificar email", onClick: scrollToClassify }}
+            />
+          </div>
+        )}
+
         {/* Middle row: 2 chart cards */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {metrics.isSuccess && metrics.data ? (
@@ -303,6 +318,7 @@ export default function DashboardPage() {
                   data={emails.data}
                   page={page}
                   onPageChange={setPage}
+                  onClassifyClick={scrollToClassify}
                 />
               </CardContent>
             </Card>

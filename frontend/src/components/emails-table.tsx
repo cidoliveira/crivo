@@ -8,11 +8,13 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { type EmailsData } from "@/hooks/use-emails"
+import { EmptyState } from "./empty-state"
 
 interface EmailsTableProps {
   data: EmailsData
   page: number
   onPageChange: (page: number) => void
+  onClassifyClick?: () => void
 }
 
 function truncate(text: string, max = 60): string {
@@ -36,7 +38,7 @@ function formatDate(dateStr: string): string {
   })
 }
 
-export function EmailsTable({ data, page, onPageChange }: EmailsTableProps) {
+export function EmailsTable({ data, page, onPageChange, onClassifyClick }: EmailsTableProps) {
   const totalPages = Math.ceil(data.total / data.page_size)
 
   return (
@@ -54,8 +56,15 @@ export function EmailsTable({ data, page, onPageChange }: EmailsTableProps) {
         <TableBody>
           {data.items.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                Nenhuma classificacao encontrada
+              <TableCell colSpan={5} className="py-0 border-0">
+                <EmptyState
+                  title="Nenhuma classificacao ainda"
+                  description="Classifique emails para ver o historico aqui"
+                  action={onClassifyClick ? {
+                    label: "Classificar email",
+                    onClick: onClassifyClick,
+                  } : undefined}
+                />
               </TableCell>
             </TableRow>
           ) : (
