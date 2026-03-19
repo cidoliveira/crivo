@@ -19,6 +19,33 @@ _EXPLANATIONS = {
     ),
 }
 
+_SUGGESTIONS = {
+    "Produtivo": (
+        "Ola, obrigado pelo contato.\n\n"
+        "Recebemos sua mensagem sobre [assunto] e ja estamos analisando. "
+        "Em breve entraremos em contato com um retorno completo sobre o tema.\n\n"
+        "Atenciosamente,\n[Seu Nome]"
+    ),
+    "Improdutivo": (
+        "Ola, obrigado pelo contato.\n\n"
+        "Agradecemos sua mensagem, porem ela nao se enquadra nas demandas "
+        "operacionais atendidas por este canal no momento. "
+        "Caso tenha uma solicitacao especifica, entre em contato pelos canais oficiais.\n\n"
+        "Atenciosamente,\n[Seu Nome]"
+    ),
+}
+
+_FALLBACK_SUGGESTION = (
+    "Ola, obrigado pelo contato.\n\n"
+    "Recebemos sua mensagem e estamos analisando o conteudo. "
+    "Em breve retornaremos com uma resposta adequada.\n\n"
+    "Atenciosamente,\n[Seu Nome]"
+)
+
+
+def build_suggestion(label: str) -> str:
+    return _SUGGESTIONS.get(label, _FALLBACK_SUGGESTION)
+
 
 def build_explanation(label: str, confidence: float) -> str:
     pct = round(confidence * 100)

@@ -28,6 +28,7 @@ class Classification(Base):
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
     model_used: Mapped[str] = mapped_column(Text, nullable=False)
     inference_ms: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    suggestion: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,

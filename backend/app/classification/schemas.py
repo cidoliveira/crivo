@@ -11,4 +11,5 @@ class ClassifyResponse(BaseModel):
     label: str           # "Produtivo" or "Improdutivo"
     confidence: float    # 0.0 - 1.0
     explanation: str     # PT-BR template string
+    suggestion: str      # PT-BR suggested response template
     inference_ms: int
