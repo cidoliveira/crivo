@@ -9,6 +9,7 @@ from app.database import get_engine
 from app.classification.router import router as classification_router
 from app.extraction.router import router as extraction_router
 from app.health.routes import router as health_router
+from app.metrics.router import router as metrics_router
 
 
 @asynccontextmanager
@@ -47,3 +48,4 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(extraction_router)
 app.include_router(classification_router)
+app.include_router(metrics_router)
