@@ -13,15 +13,28 @@ import {
 } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
 
-export function EmailInput() {
-  const [text, setText] = useState("")
+interface EmailInputProps {
+  text: string
+  onTextChange: (text: string) => void
+  onClassify: () => void
+  isClassifying: boolean
+  classifyError: string | null
+}
+
+export function EmailInput({
+  text,
+  onTextChange,
+  onClassify,
+  isClassifying,
+  classifyError,
+}: EmailInputProps) {
   const [filename, setFilename] = useState<string | null>(null)
   const extract = useExtract()
 
   const handleFileDrop = (file: File) => {
     extract.mutate(file, {
       onSuccess: (data) => {
-        setText(data.text)
+        onTextChange(data.text)
         setFilename(data.filename)
       },
     })
@@ -31,7 +44,7 @@ export function EmailInput() {
     setFilename(null)
   }
 
-  const canSubmit = text.trim().length > 0 && !extract.isPending
+  const canSubmit = text.trim().length > 0 && !extract.isPending && !isClassifying
 
   return (
     <Card>
@@ -41,12 +54,12 @@ export function EmailInput() {
       <CardContent className="flex flex-col gap-3">
         <EmailTextarea
           value={text}
-          onChange={setText}
-          disabled={extract.isPending}
+          onChange={onTextChange}
+          disabled={extract.isPending || isClassifying}
         />
         <DropZone
           onFileDrop={handleFileDrop}
-          isLoading={extract.isPending}
+          isLoading={extract.isPending || isClassifying}
           filename={filename}
           onClearFile={handleClearFile}
         />
@@ -55,8 +68,16 @@ export function EmailInput() {
             {extract.error.message}
           </p>
         )}
-        <Button disabled={!canSubmit} className="w-full">
-          {extract.isPending ? (
+        {classifyError && (
+          <p className="text-sm text-destructive">{classifyError}</p>
+        )}
+        <Button disabled={!canSubmit} onClick={onClassify} className="w-full">
+          {isClassifying ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Classificando...
+            </>
+          ) : extract.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Extraindo texto...

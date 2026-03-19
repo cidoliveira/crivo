@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useTheme } from "next-themes"
 import { WarmupOverlay } from "@/components/warmup-overlay"
 import { useBackendHealth } from "@/hooks/use-backend-health"
@@ -12,6 +13,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { EmailInput } from "@/components/email-input"
+import { useClassify } from "@/hooks/use-classify"
+import { ResultCard } from "@/components/result-card"
 
 function SunIcon() {
   return (
@@ -129,6 +132,19 @@ function TableCardSkeleton() {
 
 export default function DashboardPage() {
   const { isSuccess } = useBackendHealth()
+  const [text, setText] = useState("")
+  const classify = useClassify()
+
+  const handleClassify = () => {
+    if (text.trim()) {
+      classify.mutate(text.trim())
+    }
+  }
+
+  const handleReset = () => {
+    setText("")
+    classify.reset()
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -159,7 +175,18 @@ export default function DashboardPage() {
       <main className="mx-auto max-w-7xl px-6 py-8 flex flex-col gap-6">
         {/* Email input section */}
         <section className="max-w-2xl">
-          <EmailInput />
+          <EmailInput
+            text={text}
+            onTextChange={setText}
+            onClassify={handleClassify}
+            isClassifying={classify.isPending}
+            classifyError={classify.isError ? classify.error.message : null}
+          />
+          {classify.isSuccess && classify.data && (
+            <div className="mt-4">
+              <ResultCard result={classify.data} onReset={handleReset} />
+            </div>
+          )}
         </section>
 
         {/* Top row: 4 metric cards */}
