@@ -22,6 +22,9 @@ import { MetricCard } from "@/components/metric-card"
 import { DonutChart } from "@/components/donut-chart"
 import { ClassificationsLineChart } from "@/components/line-chart"
 import { EmailsTable } from "@/components/emails-table"
+import { BatchInput } from "@/components/batch-input"
+import { BatchResults } from "@/components/batch-results"
+import { useBatchClassify } from "@/hooks/use-batch-classify"
 
 function SunIcon() {
   return (
@@ -82,7 +85,9 @@ export default function DashboardPage() {
   const { isSuccess } = useBackendHealth()
   const [text, setText] = useState("")
   const [page, setPage] = useState(1)
+  const [mode, setMode] = useState<"single" | "batch">("single")
   const classify = useClassify()
+  const batch = useBatchClassify()
   const metrics = useMetrics()
   const emails = useEmails(page)
 
@@ -134,17 +139,59 @@ export default function DashboardPage() {
       <main className="mx-auto max-w-7xl px-6 py-8 flex flex-col gap-6">
         {/* Email input section */}
         <section className="max-w-2xl">
-          <EmailInput
-            text={text}
-            onTextChange={setText}
-            onClassify={handleClassify}
-            isClassifying={classify.isPending}
-            classifyError={classify.isError ? classify.error.message : null}
-          />
-          {classify.isSuccess && classify.data && (
-            <div className="mt-4">
-              <ResultCard result={classify.data} onReset={handleReset} />
-            </div>
+          {/* Mode toggle */}
+          <div className="flex gap-2 mb-4">
+            <Button
+              variant={mode === "single" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setMode("single")}
+            >
+              Email individual
+            </Button>
+            <Button
+              variant={mode === "batch" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setMode("batch")}
+            >
+              Lote
+            </Button>
+          </div>
+
+          {mode === "single" ? (
+            <>
+              <EmailInput
+                text={text}
+                onTextChange={setText}
+                onClassify={handleClassify}
+                isClassifying={classify.isPending}
+                classifyError={classify.isError ? classify.error.message : null}
+              />
+              {classify.isSuccess && classify.data && (
+                <div className="mt-4">
+                  <ResultCard result={classify.data} onReset={handleReset} />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {batch.status === "idle" ? (
+                <BatchInput
+                  onBatchFromTexts={batch.runBatchFromTexts}
+                  onBatchFromFiles={batch.runBatchFromFiles}
+                  isProcessing={batch.status !== "idle"}
+                  status={batch.status}
+                />
+              ) : (
+                <BatchResults
+                  status={batch.status}
+                  items={batch.items}
+                  summary={batch.summary}
+                  error={batch.error}
+                  onCancel={batch.cancel}
+                  onReset={batch.reset}
+                />
+              )}
+            </>
           )}
         </section>
 
