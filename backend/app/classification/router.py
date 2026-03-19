@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.classification.schemas import ClassifyRequest, ClassifyResponse
-from app.classification.service import classify_email_text, build_explanation, MODEL_ID
+from app.classification.service import classify_email_text, build_explanation, build_suggestion, MODEL_ID
 from app.database import get_db
 from app.emails.models import Email
 from app.classification.models import Classification
@@ -31,17 +31,19 @@ async def classify_email(
     db.add(email)
     await db.flush()
 
+    explanation = build_explanation(label, confidence)
+    suggestion = build_suggestion(label)
+
     clf = Classification(
         email_id=email.id,
         label=label,
         confidence=confidence,
         model_used=MODEL_ID,
         inference_ms=inference_ms,
+        suggestion=suggestion,
     )
     db.add(clf)
     await db.flush()
-
-    explanation = build_explanation(label, confidence)
 
     return ClassifyResponse(
         email_id=str(email.id),
@@ -49,5 +51,6 @@ async def classify_email(
         label=label,
         confidence=confidence,
         explanation=explanation,
+        suggestion=suggestion,
         inference_ms=inference_ms,
     )
