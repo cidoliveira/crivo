@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { BACKEND_URL } from "@/lib/api"
 
 export interface ClassifyResponse {
@@ -29,5 +29,13 @@ async function classifyEmail(text: string): Promise<ClassifyResponse> {
 }
 
 export function useClassify() {
-  return useMutation({ mutationFn: classifyEmail })
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: classifyEmail,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["metrics"] })
+      queryClient.invalidateQueries({ queryKey: ["emails"] })
+    },
+  })
 }
