@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useTheme } from "next-themes"
+import { Inbox, TrendingUp, TrendingDown, Percent } from "lucide-react"
 import { WarmupOverlay } from "@/components/warmup-overlay"
 import { useBackendHealth } from "@/hooks/use-backend-health"
 import {
@@ -15,6 +16,12 @@ import { Button } from "@/components/ui/button"
 import { EmailInput } from "@/components/email-input"
 import { useClassify } from "@/hooks/use-classify"
 import { ResultCard } from "@/components/result-card"
+import { useMetrics } from "@/hooks/use-metrics"
+import { useEmails } from "@/hooks/use-emails"
+import { MetricCard } from "@/components/metric-card"
+import { DonutChart } from "@/components/donut-chart"
+import { ClassificationsLineChart } from "@/components/line-chart"
+import { EmailsTable } from "@/components/emails-table"
 
 function SunIcon() {
   return (
@@ -71,69 +78,13 @@ function ThemeToggle() {
   )
 }
 
-function MetricCardSkeleton({ label }: { label: string }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm text-muted-foreground font-normal">
-          {label}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-8 w-24 mb-1" />
-        <Skeleton className="h-3 w-16" />
-      </CardContent>
-    </Card>
-  )
-}
-
-function ChartCardSkeleton({ label }: { label: string }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm text-muted-foreground font-normal">
-          {label}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Skeleton className="h-48 w-full" />
-      </CardContent>
-    </Card>
-  )
-}
-
-function TableCardSkeleton() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm text-muted-foreground font-normal">
-          Historico de classificacoes
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        <div className="flex gap-4">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-4 w-16" />
-        </div>
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="flex gap-4">
-            <Skeleton className="h-4 w-48" />
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-4 w-16" />
-            <Skeleton className="h-4 w-12" />
-          </div>
-        ))}
-      </CardContent>
-    </Card>
-  )
-}
-
 export default function DashboardPage() {
   const { isSuccess } = useBackendHealth()
   const [text, setText] = useState("")
+  const [page, setPage] = useState(1)
   const classify = useClassify()
+  const metrics = useMetrics()
+  const emails = useEmails(page)
 
   const handleClassify = () => {
     if (text.trim()) {
@@ -145,6 +96,14 @@ export default function DashboardPage() {
     setText("")
     classify.reset()
   }
+
+  // Derived metric values
+  const produtivo = metrics.data?.by_label["Produtivo"] ?? 0
+  const improdutivo = metrics.data?.by_label["Improdutivo"] ?? 0
+  const total = metrics.data?.total ?? 0
+  const pctProd = total ? Math.round((produtivo / total) * 100) : 0
+  const pctImprod = total ? Math.round((improdutivo / total) * 100) : 0
+  const avgConf = Math.round((metrics.data?.avg_confidence ?? 0) * 100)
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -189,23 +148,142 @@ export default function DashboardPage() {
           )}
         </section>
 
+        {/* Section header */}
+        <h2 className="text-lg font-semibold">Painel de Metricas</h2>
+
         {/* Top row: 4 metric cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCardSkeleton label="Total processado" />
-          <MetricCardSkeleton label="Produtivo %" />
-          <MetricCardSkeleton label="Improdutivo %" />
-          <MetricCardSkeleton label="Confianca media" />
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 -mt-4">
+          {metrics.isSuccess && metrics.data ? (
+            <>
+              <MetricCard
+                label="Total processado"
+                value={total}
+                icon={<Inbox size={16} />}
+              />
+              <MetricCard
+                label="Produtivo %"
+                value={`${pctProd}%`}
+                sub={`${produtivo} de ${total}`}
+                icon={<TrendingUp size={16} />}
+              />
+              <MetricCard
+                label="Improdutivo %"
+                value={`${pctImprod}%`}
+                sub={`${improdutivo} de ${total}`}
+                icon={<TrendingDown size={16} />}
+              />
+              <MetricCard
+                label="Confianca media"
+                value={`${avgConf}%`}
+                icon={<Percent size={16} />}
+              />
+            </>
+          ) : (
+            <>
+              {["Total processado", "Produtivo %", "Improdutivo %", "Confianca media"].map(
+                (label) => (
+                  <Card key={label}>
+                    <CardHeader>
+                      <CardTitle className="text-sm text-muted-foreground font-normal">
+                        {label}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className="h-8 w-24 mb-1" />
+                      <Skeleton className="h-3 w-16" />
+                    </CardContent>
+                  </Card>
+                )
+              )}
+            </>
+          )}
         </section>
 
         {/* Middle row: 2 chart cards */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ChartCardSkeleton label="Distribuicao por categoria" />
-          <ChartCardSkeleton label="Volume ao longo do tempo" />
+          {metrics.isSuccess && metrics.data ? (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">
+                    Distribuicao por categoria
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DonutChart produtivo={produtivo} improdutivo={improdutivo} />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">
+                    Volume ao longo do tempo
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ClassificationsLineChart data={metrics.data.daily_series} />
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <>
+              {["Distribuicao por categoria", "Volume ao longo do tempo"].map((label) => (
+                <Card key={label}>
+                  <CardHeader>
+                    <CardTitle className="text-sm text-muted-foreground font-normal">
+                      {label}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Skeleton className="h-48 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
         </section>
 
         {/* Bottom: history table */}
         <section>
-          <TableCardSkeleton />
+          {emails.isSuccess && emails.data ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">
+                  Historico de classificacoes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EmailsTable
+                  data={emails.data}
+                  page={page}
+                  onPageChange={setPage}
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-muted-foreground font-normal">
+                  Historico de classificacoes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                <div className="flex gap-4">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="flex gap-4">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-12" />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
         </section>
       </main>
     </div>
