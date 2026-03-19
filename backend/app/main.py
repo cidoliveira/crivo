@@ -2,10 +2,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from huggingface_hub import InferenceClient
+from huggingface_hub import AsyncInferenceClient
 
 from app.config import get_settings
 from app.database import get_engine
+from app.classification.router import router as classification_router
 from app.extraction.router import router as extraction_router
 from app.health.routes import router as health_router
 
@@ -15,7 +16,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown events."""
     # Startup — initialize HF client and warm up DB engine
     settings = get_settings()
-    app.state.hf_client = InferenceClient(token=settings.hf_api_key)
+    app.state.hf_client = AsyncInferenceClient(token=settings.hf_api_key)
 
     yield
 
@@ -45,3 +46,4 @@ app.add_middleware(
 # Routers
 app.include_router(health_router)
 app.include_router(extraction_router)
+app.include_router(classification_router)
