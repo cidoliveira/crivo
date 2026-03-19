@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { BACKEND_URL } from "@/lib/api"
 
 export interface ClassifyResponse {
@@ -33,9 +34,17 @@ export function useClassify() {
 
   return useMutation({
     mutationFn: classifyEmail,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["metrics"] })
       queryClient.invalidateQueries({ queryKey: ["emails"] })
+      toast.success("Email classificado com sucesso", {
+        description: `Categoria: ${data.label}`,
+      })
+    },
+    onError: (error: Error) => {
+      toast.error("Erro ao classificar o email", {
+        description: error.message,
+      })
     },
   })
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { toast } from "sonner"
 import { EmailTextarea } from "./text-area"
 import { DropZone } from "./drop-zone"
 import { useExtract } from "@/hooks/use-extract"
@@ -36,6 +37,11 @@ export function EmailInput({
       onSuccess: (data) => {
         onTextChange(data.text)
         setFilename(data.filename)
+      },
+      onError: (error) => {
+        toast.error("Erro ao extrair texto", {
+          description: error.message,
+        })
       },
     })
   }

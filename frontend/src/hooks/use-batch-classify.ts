@@ -1,6 +1,7 @@
 "use client"
 import { useState, useRef } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { BACKEND_URL } from "@/lib/api"
 
 export interface BatchItemResult {
@@ -76,6 +77,7 @@ export function useBatchClassify() {
             setStatus("complete")
             queryClient.invalidateQueries({ queryKey: ["metrics"] })
             queryClient.invalidateQueries({ queryKey: ["emails"] })
+            toast.success(`Lote concluido: ${(payload.summary as BatchSummary).successful} emails classificados`)
           }
         } catch {
           // ignore malformed SSE lines
@@ -94,6 +96,7 @@ export function useBatchClassify() {
       await _runStream(texts)
     } catch (err) {
       if ((err as Error).name === "AbortError") return
+      toast.error("Erro ao processar lote", { description: (err as Error).message })
       setError((err as Error).message ?? "Erro desconhecido")
       setStatus("error")
     }
@@ -125,6 +128,7 @@ export function useBatchClassify() {
       await _runStream(texts)
     } catch (err) {
       if ((err as Error).name === "AbortError") return
+      toast.error("Erro ao processar lote", { description: (err as Error).message })
       setError((err as Error).message ?? "Erro desconhecido")
       setStatus("error")
     }
