@@ -9,6 +9,7 @@ export interface ClassifyResponse {
   label: "Produtivo" | "Improdutivo"
   confidence: number
   explanation: string
+  suggestion: string
   inference_ms: number
 }
 
