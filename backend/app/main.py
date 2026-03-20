@@ -10,6 +10,7 @@ from app.classification.router import router as classification_router
 from app.extraction.router import router as extraction_router
 from app.health.routes import router as health_router
 from app.metrics.router import router as metrics_router
+from app.seed.router import router as seed_router
 
 
 @asynccontextmanager
@@ -49,3 +50,4 @@ app.include_router(health_router)
 app.include_router(extraction_router)
 app.include_router(classification_router)
 app.include_router(metrics_router)
+app.include_router(seed_router)
