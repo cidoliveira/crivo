@@ -26,6 +26,7 @@ import { EmptyState } from "@/components/empty-state"
 import { BatchInput } from "@/components/batch-input"
 import { BatchResults } from "@/components/batch-results"
 import { useBatchClassify } from "@/hooks/use-batch-classify"
+import { SeedButton } from "@/components/seed-button"
 
 function SunIcon() {
   return (
@@ -135,6 +136,7 @@ export default function DashboardPage() {
                 Conectado
               </span>
             )}
+            {isSuccess && <SeedButton />}
             <ThemeToggle />
           </div>
         </div>
