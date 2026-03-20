@@ -2,15 +2,9 @@
 
 import { useState } from "react"
 import { useTheme } from "next-themes"
-import { Inbox, TrendingUp, TrendingDown, Percent } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { WarmupOverlay } from "@/components/warmup-overlay"
 import { useBackendHealth } from "@/hooks/use-backend-health"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { EmailInput } from "@/components/email-input"
@@ -30,18 +24,7 @@ import { SeedButton } from "@/components/seed-button"
 
 function SunIcon() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="4" />
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
     </svg>
@@ -50,18 +33,7 @@ function SunIcon() {
 
 function MoonIcon() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
   )
@@ -72,15 +44,13 @@ function ThemeToggle() {
   const isDark = resolvedTheme === "dark"
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="size-10"
+    <button
+      className="size-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Mudar para modo claro" : "Mudar para modo escuro"}
     >
       {isDark ? <SunIcon /> : <MoonIcon />}
-    </Button>
+    </button>
   )
 }
 
@@ -108,7 +78,6 @@ export default function DashboardPage() {
     classify.reset()
   }
 
-  // Derived metric values
   const produtivo = metrics.data?.by_label["Produtivo"] ?? 0
   const improdutivo = metrics.data?.by_label["Improdutivo"] ?? 0
   const total = metrics.data?.total ?? 0
@@ -117,22 +86,22 @@ export default function DashboardPage() {
   const avgConf = Math.round((metrics.data?.avg_confidence ?? 0) * 100)
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-[100dvh] bg-background text-foreground">
       <WarmupOverlay />
 
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-semibold tracking-tight">AutoU</span>
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              Classificador de Emails
+      <header className="border-b border-border/50 sticky top-0 z-40 bg-background/80 backdrop-blur-md">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8 h-14 flex items-center justify-between">
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-base font-semibold tracking-tight">AutoU</span>
+            <span className="text-[11px] text-muted-foreground font-mono hidden sm:inline">
+              email classifier
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {isSuccess && (
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="size-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="size-1.5 rounded-full bg-emerald-500" />
                 Conectado
               </span>
             )}
@@ -142,26 +111,33 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 flex flex-col gap-6">
-        {/* Email input section */}
-        <section id="classify-section" className="max-w-2xl">
-          {/* Mode toggle */}
-          <div className="flex gap-2 mb-4">
-            <Button
-              variant={mode === "single" ? "default" : "outline"}
-              size="sm"
+      <main className="mx-auto max-w-6xl px-5 sm:px-8 py-8 flex flex-col gap-8">
+        {/* Classify Section */}
+        <section id="classify-section" className="max-w-2xl animate-fade-up">
+          {/* Tab-style mode toggle */}
+          <div className="flex gap-0.5 mb-5 p-0.5 bg-muted/60 rounded-lg w-fit">
+            <button
               onClick={() => setMode("single")}
+              className={cn(
+                "px-3.5 py-1.5 text-sm rounded-md transition-all",
+                mode === "single"
+                  ? "bg-card text-foreground shadow-sm font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              Email individual
-            </Button>
-            <Button
-              variant={mode === "batch" ? "default" : "outline"}
-              size="sm"
+              Individual
+            </button>
+            <button
               onClick={() => setMode("batch")}
+              className={cn(
+                "px-3.5 py-1.5 text-sm rounded-md transition-all",
+                mode === "batch"
+                  ? "bg-card text-foreground shadow-sm font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
               Lote
-            </Button>
+            </button>
           </div>
 
           {mode === "single" ? (
@@ -202,154 +178,140 @@ export default function DashboardPage() {
           )}
         </section>
 
-        {/* Section header */}
-        <h2 className="text-lg font-semibold">Painel de Metricas</h2>
+        {/* Dashboard */}
+        <div className="flex flex-col gap-5">
+          <h2
+            className="text-xs font-medium text-muted-foreground uppercase tracking-widest animate-fade-up"
+            style={{ animationDelay: "60ms" }}
+          >
+            Métricas
+          </h2>
 
-        {/* Top row: 4 metric cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 -mt-4">
+          {/* Unified metrics strip */}
           {metrics.isSuccess && metrics.data ? (
-            <>
-              <MetricCard
-                label="Total processado"
-                value={total}
-                icon={<Inbox size={16} />}
-              />
-              <MetricCard
-                label="Produtivo %"
-                value={`${pctProd}%`}
-                sub={`${produtivo} de ${total}`}
-                icon={<TrendingUp size={16} />}
-              />
-              <MetricCard
-                label="Improdutivo %"
-                value={`${pctImprod}%`}
-                sub={`${improdutivo} de ${total}`}
-                icon={<TrendingDown size={16} />}
-              />
-              <MetricCard
-                label="Confianca media"
-                value={`${avgConf}%`}
-                icon={<Percent size={16} />}
-              />
-            </>
+            <div
+              className="rounded-xl border border-border bg-card overflow-hidden animate-fade-up"
+              style={{ animationDelay: "100ms" }}
+            >
+              <div className="grid grid-cols-2 lg:grid-cols-4">
+                <div className="p-4 sm:p-5 border-b lg:border-b-0 border-r border-border">
+                  <MetricCard label="Total processado" value={total} />
+                </div>
+                <div className="p-4 sm:p-5 border-b lg:border-b-0 lg:border-r border-border">
+                  <MetricCard
+                    label="Produtivo"
+                    value={`${pctProd}%`}
+                    sub={`${produtivo} de ${total}`}
+                  />
+                </div>
+                <div className="p-4 sm:p-5 border-r border-border">
+                  <MetricCard
+                    label="Improdutivo"
+                    value={`${pctImprod}%`}
+                    sub={`${improdutivo} de ${total}`}
+                  />
+                </div>
+                <div className="p-4 sm:p-5">
+                  <MetricCard label="Confiança" value={`${avgConf}%`} />
+                </div>
+              </div>
+            </div>
           ) : (
-            <>
-              {["Total processado", "Produtivo %", "Improdutivo %", "Confianca media"].map(
-                (label) => (
-                  <Card key={label}>
-                    <CardHeader>
-                      <CardTitle className="text-sm text-muted-foreground font-normal">
-                        {label}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Skeleton className="h-8 w-24 mb-1" />
-                      <Skeleton className="h-3 w-16" />
-                    </CardContent>
-                  </Card>
-                )
-              )}
-            </>
+            <div
+              className="rounded-xl border border-border bg-card p-5 animate-fade-up"
+              style={{ animationDelay: "100ms" }}
+            >
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                {["Total processado", "Produtivo", "Improdutivo", "Confiança"].map(
+                  (label) => (
+                    <div key={label} className="flex flex-col gap-2">
+                      <Skeleton className="h-3 w-20" />
+                      <Skeleton className="h-7 w-16" />
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
           )}
-        </section>
 
-        {metrics.isSuccess && metrics.data && total === 0 && (
-          <div className="-mt-2">
+          {metrics.isSuccess && metrics.data && total === 0 && (
             <EmptyState
               title="Sem dados no painel"
-              description="Comece classificando um email para ver suas metricas"
+              description="Comece classificando um email para ver suas métricas"
               action={{ label: "Classificar email", onClick: scrollToClassify }}
             />
-          </div>
-        )}
-
-        {/* Middle row: 2 chart cards */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {metrics.isSuccess && metrics.data ? (
-            <>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">
-                    Distribuicao por categoria
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <DonutChart produtivo={produtivo} improdutivo={improdutivo} />
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">
-                    Volume ao longo do tempo
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ClassificationsLineChart data={metrics.data.daily_series} />
-                </CardContent>
-              </Card>
-            </>
-          ) : (
-            <>
-              {["Distribuicao por categoria", "Volume ao longo do tempo"].map((label) => (
-                <Card key={label}>
-                  <CardHeader>
-                    <CardTitle className="text-sm text-muted-foreground font-normal">
-                      {label}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Skeleton className="h-48 w-full" />
-                  </CardContent>
-                </Card>
-              ))}
-            </>
           )}
-        </section>
 
-        {/* Bottom: history table */}
-        <section>
-          {emails.isSuccess && emails.data ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">
-                  Historico de classificacoes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+          {/* Charts — asymmetric 3/2 */}
+          <section
+            className="grid grid-cols-1 md:grid-cols-5 gap-4 animate-fade-up"
+            style={{ animationDelay: "160ms" }}
+          >
+            {metrics.isSuccess && metrics.data ? (
+              <>
+                <div className="md:col-span-3 flex flex-col gap-2">
+                  <h3 className="text-xs font-medium text-muted-foreground">
+                    Volume ao longo do tempo
+                  </h3>
+                  <div className="rounded-xl border border-border bg-card p-5 flex-1">
+                    <ClassificationsLineChart data={metrics.data.daily_series} />
+                  </div>
+                </div>
+                <div className="md:col-span-2 flex flex-col gap-2">
+                  <h3 className="text-xs font-medium text-muted-foreground">
+                    Distribuição por categoria
+                  </h3>
+                  <div className="rounded-xl border border-border bg-card p-5 flex-1">
+                    <DonutChart produtivo={produtivo} improdutivo={improdutivo} />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="md:col-span-3 flex flex-col gap-2">
+                  <Skeleton className="h-3 w-40" />
+                  <Skeleton className="h-56 w-full rounded-xl" />
+                </div>
+                <div className="md:col-span-2 flex flex-col gap-2">
+                  <Skeleton className="h-3 w-28" />
+                  <Skeleton className="h-56 w-full rounded-xl" />
+                </div>
+              </>
+            )}
+          </section>
+
+          {/* History */}
+          <section
+            className="flex flex-col gap-2 animate-fade-up"
+            style={{ animationDelay: "220ms" }}
+          >
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+              Histórico
+            </h3>
+            {emails.isSuccess && emails.data ? (
+              <div className="rounded-xl border border-border bg-card overflow-hidden">
                 <EmailsTable
                   data={emails.data}
                   page={page}
                   onPageChange={setPage}
                   onClassifyClick={scrollToClassify}
                 />
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm text-muted-foreground font-normal">
-                  Historico de classificacoes
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-3">
-                <div className="flex gap-4">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-20" />
-                  <Skeleton className="h-4 w-16" />
+              </div>
+            ) : (
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex flex-col gap-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex gap-4">
+                      <Skeleton className="h-4 w-48" />
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                  ))}
                 </div>
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="flex gap-4">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-4 w-20" />
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-4 w-12" />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-        </section>
+              </div>
+            )}
+          </section>
+        </div>
       </main>
     </div>
   )

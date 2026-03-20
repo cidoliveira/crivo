@@ -56,9 +56,10 @@ export function ClassificationsLineChart({ data }: ClassificationsLineChartProps
         <Line
           type="monotone"
           dataKey="count"
-          stroke="#3b82f6"
+          stroke="#34d399"
           strokeWidth={2}
-          dot={false}
+          dot={{ fill: "#34d399", r: 2.5, strokeWidth: 0 }}
+          activeDot={{ fill: "#34d399", r: 4, strokeWidth: 2, stroke: "var(--color-card)" }}
         />
       </LineChart>
     </ResponsiveContainer>

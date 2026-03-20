@@ -18,7 +18,7 @@ export interface MetricsData {
 async function fetchMetrics(): Promise<MetricsData> {
   const res = await fetch(`${BACKEND_URL}/api/metrics`)
   if (!res.ok) {
-    throw new Error("Erro ao carregar metricas")
+    throw new Error("Erro ao carregar métricas")
   }
   return res.json()
 }

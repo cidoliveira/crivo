@@ -62,6 +62,7 @@ async def list_emails(
             Classification.confidence,
             Classification.suggestion,
             Classification.created_at,
+            Email.subject,
             Email.body_text,
         )
         .join(Email, Classification.email_id == Email.id)

@@ -24,19 +24,19 @@ function getConfidenceColor(pct: number): {
 } {
   if (pct >= 85) {
     return {
-      badgeClass: "bg-green-500/90 text-white",
-      barClass: "bg-green-500",
+      badgeClass: "bg-emerald-500/90 text-white",
+      barClass: "bg-emerald-500",
     }
   }
   if (pct >= 60) {
     return {
-      badgeClass: "bg-yellow-500/90 text-white",
-      barClass: "bg-yellow-500",
+      badgeClass: "bg-amber-500/90 text-white",
+      barClass: "bg-amber-500",
     }
   }
   return {
-    badgeClass: "bg-red-500/90 text-white",
-    barClass: "bg-red-500",
+    badgeClass: "bg-red-400/90 text-white",
+    barClass: "bg-red-400",
   }
 }
 
@@ -79,7 +79,7 @@ export function ResultCard({ result, onReset }: ResultCardProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm font-medium">
-            Resultado da Classificacao
+            Resultado da Classificação
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
@@ -117,7 +117,7 @@ export function ResultCard({ result, onReset }: ResultCardProps) {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">
-                Sugestao de Resposta
+                Sugestão de Resposta
               </span>
               <CopyButton text={suggestionText} />
             </div>
@@ -132,13 +132,13 @@ export function ResultCard({ result, onReset }: ResultCardProps) {
 
           {/* Metadata */}
           <p className="text-xs text-muted-foreground/70">
-            Tempo de inferencia: {result.inference_ms}ms
+            Tempo de inferência: {result.inference_ms}ms
           </p>
 
           {/* Reset button */}
           <div>
             <Button variant="outline" size="sm" onClick={onReset}>
-              Nova classificacao
+              Nova classificação
             </Button>
           </div>
         </CardContent>

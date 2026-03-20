@@ -13,7 +13,7 @@ interface EmailTextareaProps {
 export function EmailTextarea({
   value,
   onChange,
-  placeholder = "Cole ou digite o conteudo do e-mail aqui...",
+  placeholder = "Cole ou digite o conteúdo do e-mail aqui...",
   disabled,
 }: EmailTextareaProps) {
   return (

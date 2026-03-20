@@ -5,7 +5,9 @@ import { BACKEND_URL } from "@/lib/api"
 
 export interface EmailRow {
   id: string
+  subject: string
   body_preview: string
+  body_text: string
   label: string
   confidence: number
   suggestion: string | null

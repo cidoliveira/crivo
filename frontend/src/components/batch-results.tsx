@@ -21,8 +21,8 @@ interface BatchResultsProps {
 
 // Static lookup to avoid Tailwind v4 purging dynamic class strings
 const LABEL_STYLES: Record<string, string> = {
-  Produtivo: "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20",
-  Improdutivo: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20",
+  Produtivo: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+  Improdutivo: "bg-red-400/10 text-red-700 dark:text-red-400 border-red-400/20",
 }
 
 function truncate(text: string, max = 60): string {
@@ -42,7 +42,7 @@ export function BatchResults({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Classificacao em Lote</CardTitle>
+          <CardTitle className="text-sm font-medium">Classificação em Lote</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p className="text-sm text-destructive">{error ?? "Ocorreu um erro ao processar o lote."}</p>
@@ -61,7 +61,7 @@ export function BatchResults({
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Resultado do Lote</CardTitle>
+          <CardTitle className="text-sm font-medium">Resultado do lote</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           {/* Summary card */}
@@ -86,7 +86,7 @@ export function BatchResults({
                 </div>
               )}
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-muted-foreground">Confianca media</span>
+                <span className="text-xs text-muted-foreground">Confiança média</span>
                 <span className="text-lg font-semibold">
                   {Math.round(summary.avg_confidence * 100)}%
                 </span>
@@ -156,7 +156,7 @@ export function BatchResults({
 
           <div>
             <Button variant="outline" size="sm" onClick={onReset}>
-              Nova classificacao em lote
+              Nova classificação em lote
             </Button>
           </div>
         </CardContent>
@@ -173,7 +173,7 @@ export function BatchResults({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">Classificacao em Lote</CardTitle>
+        <CardTitle className="text-sm font-medium">Classificação em Lote</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {/* Status text */}
@@ -184,7 +184,7 @@ export function BatchResults({
               ? "Extraindo arquivos..."
               : total > 0
               ? `Classificando email ${processed} de ${total}...`
-              : "Iniciando classificacao..."}
+              : "Iniciando classificação..."}
           </span>
         </div>
 

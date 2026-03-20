@@ -45,7 +45,7 @@ export function DropZone({
 
       {isDragReject ? (
         <p className="text-sm text-destructive font-medium">
-          Formato nao suportado
+          Formato não suportado
         </p>
       ) : isDragActive ? (
         <p className="text-sm text-primary font-medium">

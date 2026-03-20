@@ -24,7 +24,9 @@ async def get_emails(
     items = [
         EmailRow(
             id=str(row.id),
+            subject=row.subject or "",
             body_preview=row.body_text[:200],
+            body_text=row.body_text,
             label=row.label,
             confidence=row.confidence,
             suggestion=row.suggestion,

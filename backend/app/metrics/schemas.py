@@ -15,7 +15,9 @@ class MetricsResponse(BaseModel):
 
 class EmailRow(BaseModel):
     id: str
+    subject: str
     body_preview: str
+    body_text: str
     label: str
     confidence: float
     suggestion: str | None

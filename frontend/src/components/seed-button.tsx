@@ -8,12 +8,13 @@ export function SeedButton() {
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="sm"
+      className="text-xs text-muted-foreground hover:text-foreground"
       onClick={() => seed.mutate()}
       disabled={seed.isPending}
     >
-      {seed.isPending ? "Carregando..." : "Carregar dados demo"}
+      {seed.isPending ? "Carregando..." : "Dados demo"}
     </Button>
   )
 }

@@ -74,7 +74,7 @@ export function BatchInput({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">Classificacao em Lote</CardTitle>
+        <CardTitle className="text-sm font-medium">Classificação em Lote</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         {/* Section A — Multi-file dropzone */}
@@ -94,7 +94,7 @@ export function BatchInput({
             <input {...getInputProps()} />
             {isDragReject ? (
               <p className="text-sm text-destructive font-medium">
-                Formato nao suportado
+                Formato não suportado
               </p>
             ) : isDragActive ? (
               <p className="text-sm text-primary font-medium">

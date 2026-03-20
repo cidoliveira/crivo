@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AutoU - Classificador de Emails",
-  description: "Classificacao inteligente de emails com IA",
+  description: "Classificação inteligente de emails com IA",
 }
 
 export default function RootLayout({

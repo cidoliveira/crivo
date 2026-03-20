@@ -15,8 +15,8 @@ interface DonutChartProps {
 }
 
 const COLORS: Record<string, string> = {
-  Produtivo: "#22c55e",
-  Improdutivo: "#ef4444",
+  Produtivo: "#34d399",
+  Improdutivo: "#f87171",
 }
 
 interface LabelViewBox {
