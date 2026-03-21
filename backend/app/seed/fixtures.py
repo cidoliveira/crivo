@@ -2,21 +2,6 @@ from datetime import datetime, timedelta, timezone
 
 _BASE = datetime(2026, 2, 17, tzinfo=timezone.utc)
 
-_SUGGESTION_PRODUTIVO = (
-    "Olá, obrigado pelo contato.\n\n"
-    "Recebemos sua mensagem sobre [assunto] e já estamos analisando. "
-    "Em breve entraremos em contato com um retorno completo sobre o tema.\n\n"
-    "Atenciosamente,\n[Seu Nome]"
-)
-
-_SUGGESTION_IMPRODUTIVO = (
-    "Olá, obrigado pelo contato.\n\n"
-    "Agradecemos sua mensagem, porém ela não se enquadra nas demandas "
-    "operacionais atendidas por este canal no momento. "
-    "Caso tenha uma solicitação específica, entre em contato pelos canais oficiais.\n\n"
-    "Atenciosamente,\n[Seu Nome]"
-)
-
 _MODEL = "facebook/bart-large-mnli"
 
 
@@ -29,7 +14,7 @@ def _email(i: int, subject: str, body: str, sender: str) -> dict:
     }
 
 
-def _prod(i: int, subject: str, body: str, sender: str, confidence: float, ms: int) -> dict:
+def _prod(i: int, subject: str, body: str, sender: str, confidence: float, ms: int, suggestion: str) -> dict:
     return {
         "email": _email(i, subject, body, sender),
         "classification": {
@@ -37,12 +22,12 @@ def _prod(i: int, subject: str, body: str, sender: str, confidence: float, ms: i
             "confidence": confidence,
             "model_used": _MODEL,
             "inference_ms": ms,
-            "suggestion": _SUGGESTION_PRODUTIVO,
+            "suggestion": suggestion,
         },
     }
 
 
-def _improd(i: int, subject: str, body: str, sender: str, confidence: float, ms: int) -> dict:
+def _improd(i: int, subject: str, body: str, sender: str, confidence: float, ms: int, suggestion: str) -> dict:
     return {
         "email": _email(i, subject, body, sender),
         "classification": {
@@ -50,7 +35,7 @@ def _improd(i: int, subject: str, body: str, sender: str, confidence: float, ms:
             "confidence": confidence,
             "model_used": _MODEL,
             "inference_ms": ms,
-            "suggestion": _SUGGESTION_IMPRODUTIVO,
+            "suggestion": suggestion,
         },
     }
 
@@ -71,6 +56,13 @@ SEED_FIXTURES = [
         "carlos.mendes@financiabr.com.br",
         0.93,
         1250,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos o interesse da FinanciaBR em uma parceria estratégica para integração de plataformas financeiras. "
+            "A proposta está alinhada com nossa visão de expansão e será encaminhada ao comitê de parcerias para avaliação.\n\n"
+            "Nossa equipe de desenvolvimento de negócios entrará em contato nos próximos dias para agendar a reunião de apresentação.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         1,
@@ -85,6 +77,13 @@ SEED_FIXTURES = [
         "ana.souza@consultoriaabc.com.br",
         0.89,
         1480,
+        (
+            "Olá,\n\n"
+            "Recebemos a solicitação de documentação para a auditoria do Q1 2026. "
+            "Já acionamos a controladoria para reunir os balancetes, relatórios de conciliação bancária e extratos solicitados.\n\n"
+            "Faremos o envio dentro do prazo indicado (20/02). Caso haja necessidade de documentos adicionais, estamos à disposição.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         2,
@@ -99,6 +98,13 @@ SEED_FIXTURES = [
         "roberto.lima@techsolutionsbr.com.br",
         0.87,
         1120,
+        (
+            "Prezado(a),\n\n"
+            "Confirmamos o recebimento da solicitação de renovação do contrato de serviços de TI com vencimento em 15/03. "
+            "Estamos preparando uma proposta atualizada que inclui a expansão de escopo para os módulos de IA.\n\n"
+            "Enviaremos os novos valores e condições até o final desta semana para que possamos concluir a negociação a tempo.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         3,
@@ -113,6 +119,13 @@ SEED_FIXTURES = [
         "patricia.oliveira@bancoexemplo.com.br",
         0.91,
         1380,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos o pedido de orçamento para o módulo de relatórios customizados com formatação COSIF. "
+            "Nossa equipe técnica está dimensionando o escopo, incluindo as exportações em PDF e CSV conforme as exigências do Banco Central.\n\n"
+            "Enviaremos o orçamento detalhado com cronograma e composição da equipe em até 5 dias úteis.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         4,
@@ -127,6 +140,13 @@ SEED_FIXTURES = [
         "fernando.costa@gestãofinanceira.com.br",
         0.85,
         980,
+        (
+            "Olá,\n\n"
+            "Confirmamos o interesse na reunião de revisão orçamentária para o planejamento 2026/2027. "
+            "Estamos verificando a disponibilidade da equipe para a semana de 02/03 e enviaremos um convite com as opções de horário.\n\n"
+            "Já estamos consolidando os dados macroeconômicos atualizados para embasar a discussão das projeções de receita.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         5,
@@ -141,6 +161,13 @@ SEED_FIXTURES = [
         "mariana.ferreira@jurídicofin.com.br",
         0.88,
         1560,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos a consulta sobre as implicações tributárias do IFRS 9, especificamente o tratamento fiscal das provisões ECL. "
+            "Nosso departamento jurídico já está analisando a questão em conjunto com a área de compliance tributário.\n\n"
+            "O parecer será entregue dentro do prazo solicitado (dia 28). Caso surjam dúvidas adicionais durante a análise, entraremos em contato.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         6,
@@ -155,6 +182,13 @@ SEED_FIXTURES = [
         "joao.santos@pagamentosdigitais.com.br",
         0.94,
         2100,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos o alerta de falha crítica no módulo de processamento de pagamentos e já escalamos para o time de engenharia com prioridade máxima. "
+            "Um engenheiro sênior está sendo designado imediatamente para diagnóstico e resolução das 230 transações bloqueadas.\n\n"
+            "Acompanharemos o caso dentro da janela de SLA crítico. Atualizações serão enviadas a cada 30 minutos.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         7,
@@ -170,6 +204,13 @@ SEED_FIXTURES = [
         "beatriz.alves@riskproconsultoria.com.br",
         0.86,
         1340,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos à RiskPro Consultoria pela proposta de gestão de riscos financeiros com framework Basileia III. "
+            "O material será avaliado pelo nosso comitê de riscos na próxima reunião ordinária.\n\n"
+            "Entraremos em contato para agendar a apresentação detalhada conforme a disponibilidade da diretoria.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         8,
@@ -184,6 +225,13 @@ SEED_FIXTURES = [
         "lucas.martins@autou.com.br",
         0.92,
         1670,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos a solicitação de aprovação do investimento de R$ 480.000 em infraestrutura de dados (cloud migration e data warehouse). "
+            "O pedido será pautado na próxima reunião da diretoria com prioridade, dado o impacto no cronograma de IA.\n\n"
+            "Solicitamos que mantenha o business case atualizado para apresentação ao board. Retornaremos com o parecer em breve.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         9,
@@ -198,6 +246,13 @@ SEED_FIXTURES = [
         "diana.rocha@softfinbrasil.com.br",
         0.90,
         1190,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos o contrato de fornecimento das 50 licenças do SoftFin Pro. "
+            "O documento foi encaminhado ao departamento jurídico para revisão das cláusulas contratuais.\n\n"
+            "Retornaremos com eventuais ajustes ou a assinatura dentro do prazo indicado (quinta-feira) para garantir a ativação no próximo mês.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         10,
@@ -212,6 +267,13 @@ SEED_FIXTURES = [
         "henrique.barros@créditocorporativo.com.br",
         0.83,
         1430,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos o pedido de esclarecimento sobre a cláusula 8.3 do contrato de crédito n. 2025-CR-4872. "
+            "Nossa equipe jurídica está revisando a redação referente ao gatilho de inadimplência em casos de reestruturação societária.\n\n"
+            "Enviaremos o esclarecimento formal por escrito e, se necessário, proporemos um aditivo contratual antes da renovação em março.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         11,
@@ -226,6 +288,13 @@ SEED_FIXTURES = [
         "sergio.campos@investnacionais.com.br",
         0.88,
         2050,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos o interesse da Investimentos Nacionais SA na aquisição da carteira de clientes PJ. "
+            "A proposta será apresentada à diretoria para avaliação estratégica preliminar.\n\n"
+            "Caso haja interesse em prosseguir, agendaremos a reunião de NDA para formalizar o início das tratativas e do processo de due diligence.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         12,
@@ -239,6 +308,13 @@ SEED_FIXTURES = [
         "claudia.nunes@autou.com.br",
         0.81,
         890,
+        (
+            "Olá,\n\n"
+            "Recebemos a solicitação de reembolso de R$ 3.247,80 referente à viagem corporativa São Paulo/Recife (10 a 12/02). "
+            "A planilha e as notas fiscais em anexo serão analisadas pelo departamento financeiro.\n\n"
+            "O crédito será processado no próximo ciclo de pagamentos. Informaremos a data prevista assim que a análise for concluída.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         13,
@@ -253,6 +329,14 @@ SEED_FIXTURES = [
         "thiago.mendonca@autou.com.br",
         0.79,
         950,
+        (
+            "Prezado(a),\n\n"
+            "Bem-vindo à equipe! Recebemos a solicitação de credenciais de acesso ao ERP Financeiro, "
+            "plataforma de compliance regulatório e repositório de documentos.\n\n"
+            "As credenciais serão criadas e estarão prontas até sexta-feira conforme solicitado. "
+            "Você receberá as instruções de primeiro acesso por e-mail.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         14,
@@ -267,6 +351,13 @@ SEED_FIXTURES = [
         "rafael.xavier@compliancefin.com.br",
         0.86,
         1720,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos o questionário de due diligence ESG e financeiro para homologação de fornecedores. "
+            "Já estamos reunindo a documentação solicitada, incluindo demonstrações financeiras, política anticorrupção e certidões.\n\n"
+            "O preenchimento completo será devolvido dentro do prazo de 10 dias úteis. Caso haja dúvidas sobre algum item, entraremos em contato.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         15,
@@ -281,6 +372,13 @@ SEED_FIXTURES = [
         "vanessa.teixeira@grupomercantilbr.com.br",
         0.90,
         1580,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos a solicitação de elevação do limite de crédito de R$ 500.000 para R$ 1.200.000. "
+            "Os documentos enviados (balancete, DRE e declaração de faturamento) foram encaminhados à área de análise de crédito.\n\n"
+            "O parecer sobre a revisão do limite será emitido em até 7 dias úteis. Entraremos em contato com o resultado.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         16,
@@ -295,6 +393,14 @@ SEED_FIXTURES = [
         "anonimo@autou.com.br",
         0.84,
         2200,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos a denúncia sobre as irregularidades no setor de pagamentos. "
+            "Sua comunicação será tratada com total confidencialidade conforme nossa política de compliance.\n\n"
+            "A área de auditoria interna já foi acionada para investigar as transferências a fornecedores não cadastrados. "
+            "Se necessário, entraremos em contato de forma sigilosa para obter evidências adicionais.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         17,
@@ -309,6 +415,14 @@ SEED_FIXTURES = [
         "marços.vieira@escolafinancasbr.com.br",
         0.82,
         1050,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos a proposta de treinamento corporativo para certificação CPA-20 da ANBIMA. "
+            "O programa de 80 horas com desconto para grupos é de interesse do nosso departamento de RH.\n\n"
+            "Encaminharemos a proposta à área de desenvolvimento de pessoas para avaliação. "
+            "Retornaremos sobre o agendamento da apresentação em breve.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         18,
@@ -323,6 +437,13 @@ SEED_FIXTURES = [
         "juliana.melo@seguradoraexemplo.com.br",
         0.80,
         1100,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos o alerta de vencimento da apólice de seguro patrimonial n. SP-2024-88741. "
+            "Estamos providenciando a documentação atualizada do imobilizado para o processo de renovação.\n\n"
+            "Entraremos em contato para agendar a visita do corretor e dar andamento à cotação dentro do prazo de 28 dias.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         19,
@@ -337,6 +458,13 @@ SEED_FIXTURES = [
         "gustavo.pires@autou.com.br",
         0.93,
         1300,
+        (
+            "Olá,\n\n"
+            "Recebemos a solicitação do pacote de indicadores financeiros para o board de 25/02. "
+            "A equipe de controladoria já está consolidando o P&L, EBITDA ajustado, variação de caixa, liquidez corrente e projeções.\n\n"
+            "O material será entregue até segunda-feira às 18h conforme solicitado. Caso precise de algum corte adicional, nos avise.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         20,
@@ -351,6 +479,13 @@ SEED_FIXTURES = [
         "renata.fontes@bancoexemplo.com.br",
         0.87,
         1640,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos a solicitação de parecer técnico sobre o CDB com liquidez diária e rentabilidade CDI + 1,5%. "
+            "A equipe de análise já está avaliando a viabilidade financeira, o impacto no funding e a adequação ao perfil de risco.\n\n"
+            "O parecer será concluído a tempo da reunião do ALCO na próxima semana.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         21,
@@ -365,6 +500,13 @@ SEED_FIXTURES = [
         "anderson.ramos@folhapro.com.br",
         0.85,
         1220,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos à FolhaPro Serviços pela proposta de terceirização da folha de pagamento. "
+            "A estimativa de redução de 35% nos custos operacionais é relevante e será analisada pela diretoria de RH e financeiro.\n\n"
+            "Retornaremos sobre a autorização para avançar à etapa de proposta técnica detalhada após a análise interna.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         22,
@@ -379,6 +521,13 @@ SEED_FIXTURES = [
         "cobranca@techsolutionsbr.com.br",
         0.88,
         1410,
+        (
+            "Prezado(a),\n\n"
+            "Recebemos a notificação sobre o boleto de R$ 18.750,00 referente aos serviços de TI de janeiro, vencido em 10/02. "
+            "Já acionamos o departamento financeiro para verificar o status do pagamento e providenciar a regularização.\n\n"
+            "Caso o pagamento já tenha sido efetuado, enviaremos o comprovante. Do contrário, a quitação será processada com urgência.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _prod(
         23,
@@ -394,6 +543,13 @@ SEED_FIXTURES = [
         "isabella.correia@gmail.com",
         0.76,
         870,
+        (
+            "Prezado(a),\n\n"
+            "Agradecemos seu interesse em integrar a equipe da AutoU e pela candidatura espontânea para a posição de Analista Sênior de Riscos e Crédito. "
+            "Seu currículo foi encaminhado ao banco de talentos e será avaliado pela equipe de recrutamento.\n\n"
+            "Caso surja uma oportunidade compatível com seu perfil em modelagem PD/LGD/EAD e IFRS 9, entraremos em contato.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     # --- Improdutivo (16) ---
     _improd(
@@ -411,6 +567,13 @@ SEED_FIXTURES = [
         "noticias@mercadofinanceirobr.com.br",
         0.91,
         1850,
+        (
+            "Olá,\n\n"
+            "Agradecemos o envio da Newsletter Semanal do Mercado Financeiro (Edição 47). "
+            "Trata-se de conteúdo informativo de distribuição automática, sem necessidade de ação por parte desta equipe.\n\n"
+            "A newsletter foi arquivada para referência. Nenhuma resposta adicional é necessária.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         25,
@@ -425,6 +588,13 @@ SEED_FIXTURES = [
         "noreply@bancoexemplo.com.br",
         0.89,
         1120,
+        (
+            "Olá,\n\n"
+            "Esta mensagem é uma notificação automática do Banco Exemplo informando a disponibilidade do extrato bancário de janeiro. "
+            "Não requer resposta, pois o próprio remetente indica que é uma mensagem automática (noreply).\n\n"
+            "O extrato pode ser consultado diretamente no internet banking, sem necessidade de ação adicional.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         26,
@@ -440,6 +610,13 @@ SEED_FIXTURES = [
         "segurança@bancoexemplo.com.br",
         0.88,
         960,
+        (
+            "Olá,\n\n"
+            "Este é um alerta automático de segurança do Banco Exemplo sobre um novo acesso detectado na conta. "
+            "A mensagem é informativa e não requer resposta, pois o próprio sistema orienta as ações diretamente pelo app.\n\n"
+            "Caso o acesso não seja reconhecido, recomenda-se seguir as instruções de bloqueio indicadas na mensagem original.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         27,
@@ -456,6 +633,13 @@ SEED_FIXTURES = [
         "transações@bancoexemplo.com.br",
         0.92,
         870,
+        (
+            "Olá,\n\n"
+            "Esta mensagem é um comprovante automático de TED no valor de R$ 5.000,00 para Fornecedor XYZ Ltda. "
+            "Trata-se de uma confirmação de transação gerada pelo sistema bancário, sem necessidade de resposta.\n\n"
+            "O comprovante foi arquivado para fins de registro e conciliação.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         28,
@@ -472,6 +656,13 @@ SEED_FIXTURES = [
         "eventos@fintechbrasil.com.br",
         0.85,
         1430,
+        (
+            "Olá,\n\n"
+            "Agradecemos o convite para o webinar 'Tendências em Fintechs para 2026' do FinTechBrasil Summit. "
+            "Trata-se de um convite promocional para evento externo, sem demanda operacional direta.\n\n"
+            "A inscrição, se desejada, pode ser feita diretamente pelo link informado na mensagem original.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         29,
@@ -487,6 +678,13 @@ SEED_FIXTURES = [
         "promocoes@bancoinvestimentosbr.com.br",
         0.87,
         1280,
+        (
+            "Olá,\n\n"
+            "Esta mensagem é uma oferta promocional do Banco Investimentos BR sobre CDB com 115% do CDI. "
+            "Trata-se de comunicação de marketing, sem solicitação que demande ação operacional.\n\n"
+            "Caso haja interesse no produto, a aplicação pode ser realizada diretamente pelo app conforme instruções da oferta.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         30,
@@ -504,6 +702,13 @@ SEED_FIXTURES = [
         "relatórios@gestãoativos.com.br",
         0.90,
         1680,
+        (
+            "Olá,\n\n"
+            "Este é um relatório automático semanal de portfólio gerado pelo Sistema de Gestão de Investimentos. "
+            "Não requer resposta, pois é uma consolidação informativa emitida automaticamente toda segunda-feira.\n\n"
+            "Eventuais ajustes nos alertas podem ser feitos diretamente no portal de configurações.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         31,
@@ -518,6 +723,13 @@ SEED_FIXTURES = [
         "noreply@bancoexemplo.com.br",
         0.93,
         790,
+        (
+            "Olá,\n\n"
+            "Esta é uma notificação automática informando a disponibilidade do informe de rendimentos 2025 para o Imposto de Renda. "
+            "A mensagem é de caráter informativo e o remetente (noreply) indica que não aceita respostas.\n\n"
+            "O download do informe pode ser feito diretamente pelo link indicado na mensagem.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         32,
@@ -534,6 +746,13 @@ SEED_FIXTURES = [
         "newsletter@economistasbr.com.br",
         0.86,
         1540,
+        (
+            "Olá,\n\n"
+            "Agradecemos o envio da Newsletter de Análise Macroeconômica de fevereiro 2026 da Economistas BR. "
+            "Trata-se de conteúdo editorial de distribuição em massa, sem demanda operacional para este canal.\n\n"
+            "A análise foi encaminhada internamente para referência da equipe econômica.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         33,
@@ -550,6 +769,13 @@ SEED_FIXTURES = [
         "faturas@corporativobr.com.br",
         0.88,
         910,
+        (
+            "Olá,\n\n"
+            "Esta é uma notificação automática do Banco Corporativo BR informando a disponibilidade da fatura do cartão corporativo "
+            "(R$ 12.847,35, vencimento 05/03). Não requer resposta, pois é gerada automaticamente pelo sistema de cobrança.\n\n"
+            "Os lançamentos detalhados podem ser consultados diretamente no app do banco.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         34,
@@ -565,6 +791,13 @@ SEED_FIXTURES = [
         "noreply@autoinvest.com.br",
         0.84,
         1060,
+        (
+            "Olá,\n\n"
+            "Esta é uma confirmação automática de cadastro na plataforma AutoInvest. "
+            "Trata-se de mensagem de boas-vindas gerada pelo sistema, sem necessidade de resposta ou ação operacional.\n\n"
+            "Recomenda-se ativar a autenticação em dois fatores conforme orientado na mensagem original.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         35,
@@ -580,6 +813,13 @@ SEED_FIXTURES = [
         "pesquisa@bancoexemplo.com.br",
         0.82,
         1150,
+        (
+            "Olá,\n\n"
+            "Esta é uma pesquisa de satisfação automática do Banco Exemplo sobre atendimento recente. "
+            "Trata-se de comunicação automatizada de CRM, sem demanda que exija tratamento operacional.\n\n"
+            "Caso deseje responder à pesquisa, basta acessar o link indicado na mensagem original.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         36,
@@ -597,6 +837,13 @@ SEED_FIXTURES = [
         "legal@bancoexemplo.com.br",
         0.80,
         1380,
+        (
+            "Olá,\n\n"
+            "Esta mensagem é um aviso informativo do Banco Exemplo sobre atualização dos Termos de Uso e Política de Privacidade (LGPD). "
+            "Trata-se de comunicação legal de caráter informativo, sem solicitação que demande resposta.\n\n"
+            "Os novos termos podem ser consultados no portal conforme indicado. Nenhuma ação adicional é necessária.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         37,
@@ -612,6 +859,13 @@ SEED_FIXTURES = [
         "avisos@seguradosnacional.com.br",
         0.83,
         820,
+        (
+            "Olá,\n\n"
+            "Este é um lembrete automático da Seguradora Nacional sobre o vencimento do seguro de vida em grupo (apólice SV-2025-44123, R$ 1.240,00). "
+            "A própria mensagem informa que nenhuma ação é necessária, pois o pagamento será via débito automático.\n\n"
+            "Mensagem arquivada para referência. Nenhuma resposta é requerida.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         38,
@@ -629,6 +883,13 @@ SEED_FIXTURES = [
         "novidades@bancoexemplo.com.br",
         0.91,
         940,
+        (
+            "Olá,\n\n"
+            "Esta é uma comunicação informativa do Banco Exemplo divulgando o novo recurso de PIX Agendado no app. "
+            "Trata-se de um anúncio de produto enviado em massa, sem demanda operacional para este canal.\n\n"
+            "A atualização do app, se desejada, pode ser feita diretamente pela loja de aplicativos.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
     _improd(
         39,
@@ -645,5 +906,12 @@ SEED_FIXTURES = [
         "monitor@tributário.com.br",
         0.70,
         2480,
+        (
+            "Olá,\n\n"
+            "Este é um boletim tributário automatizado do SistemaTrib com as alterações fiscais de fevereiro 2026 "
+            "(PIS/COFINS, Refis MEIs, IOF). Trata-se de conteúdo gerado automaticamente por sistema de monitoramento.\n\n"
+            "O boletim foi encaminhado à área fiscal para ciência. Nenhuma resposta ao remetente é necessária.\n\n"
+            "Atenciosamente,\n[Seu Nome]"
+        ),
     ),
 ]
