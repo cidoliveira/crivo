@@ -12,9 +12,8 @@ interface TopbarProps {
 export function Topbar({ title, pill, children }: TopbarProps) {
   return (
     <header
-      className="sticky top-0 z-10 flex items-center justify-between"
+      className="sticky top-0 z-10 flex items-center justify-between px-4 lg:px-6 py-3"
       style={{
-        padding: '12px 24px',
         background: 'rgba(10,10,11,0.88)',
         backdropFilter: 'blur(14px) saturate(115%)',
         borderBottom: '1px solid var(--rule)',
