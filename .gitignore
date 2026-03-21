@@ -1,2 +1,9 @@
 .planning/
 image.png
+
+# Dev artifacts
+.playwright-mcp/
+.superpowers/
+*.png
+*.mp4
+image.png
