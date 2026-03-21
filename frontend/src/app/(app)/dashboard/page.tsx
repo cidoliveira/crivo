@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Topbar } from "@/components/topbar"
 import { MetricsStrip } from "@/components/metrics-strip"
 import { ClassificationsLineChart } from "@/components/line-chart"
@@ -86,6 +87,49 @@ export default function DashboardPage() {
       </Topbar>
 
       <div className="p-5 lg:p-6 space-y-4">
+        {/* Classify CTA */}
+        <Link
+          href="/classify"
+          className="group flex items-center gap-4 rounded-[10px] p-4 transition-all duration-150 animate-fade-up"
+          style={{
+            background: 'linear-gradient(160deg, rgba(45,212,160,0.06) 0%, rgba(45,212,160,0.015) 100%)',
+            border: '1px solid var(--stamp-approved-border)',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'rgba(45,212,160,0.25)'
+            e.currentTarget.style.background = 'linear-gradient(160deg, rgba(45,212,160,0.08) 0%, rgba(45,212,160,0.02) 100%)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--stamp-approved-border)'
+            e.currentTarget.style.background = 'linear-gradient(160deg, rgba(45,212,160,0.06) 0%, rgba(45,212,160,0.015) 100%)'
+          }}
+        >
+          <div
+            className="flex items-center justify-center size-9 rounded-lg shrink-0"
+            style={{ background: 'var(--stamp-approved-dim)' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="var(--stamp-approved)" strokeWidth="1.3">
+              <path d="M4 8h8" />
+              <path d="M8 4v8" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] font-medium" style={{ color: 'var(--ink)' }}>
+              Classificar email
+            </div>
+            <div className="text-[11px]" style={{ color: 'var(--ink-tertiary)' }}>
+              Cole texto, arraste um arquivo .txt ou .pdf
+            </div>
+          </div>
+          <svg
+            width="16" height="16" viewBox="0 0 16 16" fill="none"
+            stroke="var(--ink-ghost)" strokeWidth="1.3"
+            className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+          >
+            <path d="M6 4l4 4-4 4" />
+          </svg>
+        </Link>
+
         {/* Metrics strip */}
         <div
           className="animate-fade-up"
