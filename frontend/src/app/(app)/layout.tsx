@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/sidebar"
+import { WarmupOverlay } from "@/components/warmup-overlay"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         `,
       }}
     >
+      <WarmupOverlay />
       <div className="hidden lg:block">
         <Sidebar />
       </div>

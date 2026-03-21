@@ -1,13 +1,10 @@
 "use client"
 
 import "./velorah/velorah.css"
-import { WarmupOverlay } from "@/components/warmup-overlay"
 
 export default function LandingPage() {
   return (
     <div className="velorah min-h-[100dvh] relative overflow-hidden">
-      <WarmupOverlay />
-
       {/* Video Background */}
       <video
         autoPlay
@@ -30,18 +27,6 @@ export default function LandingPage() {
         >
           AutoU
         </span>
-
-        <div className="hidden md:flex items-center gap-8">
-          <a href="/dashboard" className="text-sm text-white/70 hover:text-white transition-colors">
-            Dashboard
-          </a>
-          <a href="/classify" className="text-sm text-white/70 hover:text-white transition-colors">
-            Classificar
-          </a>
-          <a href="/history" className="text-sm text-white/70 hover:text-white transition-colors">
-            Histórico
-          </a>
-        </div>
 
         <a href="/dashboard" className="liquid-glass rounded-full px-6 py-2.5 text-sm text-white hover:scale-[1.03] transition-transform cursor-pointer">
           Abrir App
