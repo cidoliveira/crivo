@@ -25,12 +25,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="pt-BR"
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-      <body className="min-h-screen bg-background text-foreground">
+    <html lang="pt-BR" className={`dark ${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="min-h-screen font-sans"
+        style={{ background: 'var(--void)', color: 'var(--ink)' }}>
         <Providers>{children}</Providers>
         <Toaster />
       </body>
