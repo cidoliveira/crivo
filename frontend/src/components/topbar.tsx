@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { MobileNav } from "@/components/mobile-nav"
 
 interface TopbarProps {
   title: string
@@ -20,7 +21,9 @@ export function Topbar({ title, pill, children }: TopbarProps) {
       }}
     >
       <div className="flex items-center gap-1.5">
-        {/* Hamburger placeholder for mobile — MobileNav will be added in Task 8 */}
+        <div className="lg:hidden">
+          <MobileNav />
+        </div>
         <span
           className="text-[13px] font-semibold"
           style={{ color: 'var(--ink)', letterSpacing: '-0.2px' }}
