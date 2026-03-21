@@ -1,63 +1,71 @@
 "use client"
 
-import Link from "next/link"
+import "./velorah/velorah.css"
 import { WarmupOverlay } from "@/components/warmup-overlay"
 
 export default function LandingPage() {
   return (
-    <div
-      className="flex min-h-dvh flex-col items-center justify-center relative z-[1]"
-      style={{
-        background: `
-          radial-gradient(ellipse 60% 45% at 50% 0%, rgba(45,212,160,0.03) 0%, transparent 55%),
-          radial-gradient(ellipse 40% 35% at 50% 100%, rgba(45,212,160,0.015) 0%, transparent 45%)
-        `,
-      }}
-    >
+    <div className="velorah min-h-[100dvh] relative overflow-hidden">
       <WarmupOverlay />
 
-      <div className="flex flex-col items-center gap-6 px-5 text-center animate-fade-up">
-        {/* Wordmark */}
-        <h1
-          className="text-3xl font-bold tracking-tight"
-          style={{ color: 'var(--ink)', letterSpacing: '-1px' }}
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src="/hero-bg.mp4" type="video/mp4" />
+      </video>
+
+      {/* Dark overlay for text contrast */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+
+      {/* Navigation */}
+      <nav className="relative z-10 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+        <span
+          className="text-3xl tracking-tight text-white"
+          style={{ fontFamily: "var(--font-display)" }}
         >
           AutoU
+        </span>
+
+        <div className="hidden md:flex items-center gap-8">
+          <a href="/dashboard" className="text-sm text-white/70 hover:text-white transition-colors">
+            Dashboard
+          </a>
+          <a href="/classify" className="text-sm text-white/70 hover:text-white transition-colors">
+            Classificar
+          </a>
+          <a href="/history" className="text-sm text-white/70 hover:text-white transition-colors">
+            Histórico
+          </a>
+        </div>
+
+        <a href="/dashboard" className="liquid-glass rounded-full px-6 py-2.5 text-sm text-white hover:scale-[1.03] transition-transform cursor-pointer">
+          Abrir App
+        </a>
+      </nav>
+
+      {/* Hero */}
+      <section className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-40">
+        <h1
+          className="text-5xl sm:text-7xl md:text-8xl leading-[0.95] tracking-[-2.46px] max-w-7xl font-normal text-white animate-fade-rise drop-shadow-[0_2px_24px_rgba(0,0,0,0.5)]"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          Classifique emails com inteligência artificial.
         </h1>
 
-        {/* Subtitle */}
-        <p
-          className="text-sm max-w-xs"
-          style={{ color: 'var(--ink-tertiary)' }}
-        >
-          Classificador de emails com inteligência artificial
+        <p className="text-white/75 text-base sm:text-lg max-w-2xl mt-8 leading-relaxed animate-fade-rise-delay">
+          Cole o texto de um email. Em segundos, a IA diz se é produtivo ou
+          não — e ainda sugere uma resposta em português.
         </p>
 
-        {/* CTA */}
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 text-sm font-medium transition-colors duration-150"
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'var(--stamp-approved)',
-            color: 'var(--void)',
-          }}
-        >
-          Acessar dashboard
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M3 8h10M9 4l4 4-4 4" />
-          </svg>
-        </Link>
-
-        {/* Subtle tech badge */}
-        <span
-          className="text-[10px] font-mono tabular-nums"
-          style={{ color: 'var(--ink-ghost)' }}
-        >
-          v1.0 · Next.js + FastAPI + Claude
-        </span>
-      </div>
+        <a href="/dashboard" className="liquid-glass rounded-full px-14 py-5 text-base text-white mt-12 hover:scale-[1.03] transition-transform cursor-pointer animate-fade-rise-delay-2">
+          Experimentar
+        </a>
+      </section>
     </div>
   )
 }
