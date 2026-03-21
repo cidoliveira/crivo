@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useBackendHealth } from "@/hooks/use-backend-health"
 
 const navItems = [
   {
@@ -63,8 +62,7 @@ const secondaryItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
-  const health = useBackendHealth()
-  const isConnected = health.isSuccess
+
 
   function isActive(href: string) {
     if (href.includes("?")) return pathname === href.split("?")[0]
@@ -204,41 +202,6 @@ export function Sidebar() {
         {secondaryItems.map(renderNavItem)}
       </nav>
 
-      {/* Footer — API status */}
-      <div
-        style={{
-          padding: "10px 4px 14px",
-          borderTop: "1px solid var(--rule)",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-        }}
-      >
-        <span
-          style={{
-            width: 5,
-            height: 5,
-            borderRadius: "50%",
-            flexShrink: 0,
-            background: isConnected ? "var(--stamp-approved)" : "var(--ink-ghost)",
-            boxShadow: isConnected ? "0 0 5px rgba(45,212,160,0.3)" : "none",
-          }}
-        />
-        <span style={{ fontSize: 11, color: "var(--ink-ghost)" }}>
-          {isConnected ? "API conectada" : "API offline"}
-        </span>
-        <span
-          style={{
-            fontSize: 10,
-            color: "var(--ink-ghost)",
-            fontVariantNumeric: "tabular-nums",
-            fontFamily: "var(--font-mono)",
-            marginLeft: "auto",
-          }}
-        >
-          {health.data?.latencyMs ?? "--"}ms
-        </span>
-      </div>
     </aside>
   )
 }
