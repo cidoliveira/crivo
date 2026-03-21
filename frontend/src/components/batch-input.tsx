@@ -41,7 +41,7 @@ export function BatchInput({
     onDrop: (accepted) => {
       setFileError(null)
       if (files.length + accepted.length > 20) {
-        setFileError("Maximo de 20 arquivos por lote.")
+        setFileError("Máximo de 20 arquivos por lote.")
         return
       }
       setFiles((prev) => [...prev, ...accepted])
@@ -177,7 +177,7 @@ export function BatchInput({
             onChange={(e) => setBatchText(e.target.value)}
             disabled={isProcessing}
             minRows={5}
-            placeholder="Cole multiplos emails separados por ---"
+            placeholder="Cole múltiplos emails separados por ---"
             className="w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           />
           <p className="text-xs text-muted-foreground">
