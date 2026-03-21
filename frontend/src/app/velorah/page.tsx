@@ -25,7 +25,7 @@ export default function VelorahPage() {
           className="text-3xl tracking-tight text-white"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          AutoU
+          Crivo
         </span>
 
         <div className="hidden md:flex items-center gap-8">

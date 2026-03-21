@@ -25,7 +25,7 @@ export default function LandingPage() {
           className="text-3xl tracking-tight text-white"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          AutoU
+          Crivo
         </span>
 
         <a href="/dashboard" className="liquid-glass rounded-full px-6 py-2.5 text-sm text-white hover:scale-[1.03] transition-transform cursor-pointer">

@@ -176,7 +176,7 @@ export function MobileNav() {
               gap: 8,
             }}
           >
-            AutoU
+            Crivo
             <span
               style={{
                 width: 1,

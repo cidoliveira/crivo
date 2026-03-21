@@ -133,7 +133,7 @@ export function Sidebar() {
       {/* Logo */}
       <div style={{ padding: "18px 10px 4px", display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: -0.5, color: "var(--ink)" }}>
-          AutoU
+          Crivo
         </span>
         <span
           style={{

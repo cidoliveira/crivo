@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "AutoU - Classificador de Emails",
+  title: "Crivo — Classificador de Emails",
   description: "Classificação inteligente de emails com IA",
 }
 
