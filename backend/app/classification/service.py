@@ -19,32 +19,29 @@ _EXPLANATIONS = {
     ),
 }
 
-_SUGGESTIONS = {
-    "Produtivo": (
-        "Olá, obrigado pelo contato.\n\n"
-        "Recebemos sua mensagem sobre [assunto] e já estamos analisando. "
-        "Em breve entraremos em contato com um retorno completo sobre o tema.\n\n"
-        "Atenciosamente,\n[Seu Nome]"
-    ),
-    "Improdutivo": (
-        "Olá, obrigado pelo contato.\n\n"
-        "Agradecemos sua mensagem, porém ela não se enquadra nas demandas "
-        "operacionais atendidas por este canal no momento. "
-        "Caso tenha uma solicitação específica, entre em contato pelos canais oficiais.\n\n"
-        "Atenciosamente,\n[Seu Nome]"
-    ),
-}
+def build_suggestion(label: str, text: str = "") -> str:
+    # Extract first meaningful line as subject hint
+    lines = [l.strip() for l in text.strip().split('\n') if l.strip() and len(l.strip()) > 10]
+    subject_hint = lines[0][:80] if lines else "sua mensagem"
 
-_FALLBACK_SUGGESTION = (
-    "Olá, obrigado pelo contato.\n\n"
-    "Recebemos sua mensagem e estamos analisando o conteúdo. "
-    "Em breve retornaremos com uma resposta adequada.\n\n"
-    "Atenciosamente,\n[Seu Nome]"
-)
-
-
-def build_suggestion(label: str) -> str:
-    return _SUGGESTIONS.get(label, _FALLBACK_SUGGESTION)
+    if label == "Produtivo":
+        return (
+            f"Prezado(a),\n\n"
+            f"Recebemos sua mensagem referente a \"{subject_hint}\" e já estamos "
+            f"encaminhando ao setor responsável para análise e tratamento.\n\n"
+            f"Retornaremos com uma resposta completa em até 2 dias úteis.\n\n"
+            f"Atenciosamente,\n[Seu Nome]"
+        )
+    else:
+        return (
+            f"Prezado(a),\n\n"
+            f"Agradecemos o envio da mensagem referente a \"{subject_hint}\". "
+            f"Identificamos que se trata de um conteúdo informativo que não requer "
+            f"ação imediata de nossa parte.\n\n"
+            f"Caso tenha alguma solicitação específica, por favor entre em contato "
+            f"diretamente pelos nossos canais de atendimento.\n\n"
+            f"Atenciosamente,\n[Seu Nome]"
+        )
 
 
 def build_explanation(label: str, confidence: float) -> str:

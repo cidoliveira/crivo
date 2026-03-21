@@ -42,7 +42,7 @@ async def classify_email(
     await db.flush()
 
     explanation = build_explanation(label, confidence)
-    suggestion = build_suggestion(label)
+    suggestion = build_suggestion(label, text)
 
     clf = Classification(
         email_id=email.id,
@@ -124,7 +124,7 @@ async def classify_batch(
         db.add(email)
         await db.flush()
 
-        suggestion = build_suggestion(label)
+        suggestion = build_suggestion(label, stripped)
 
         clf = Classification(
             email_id=email.id,
