@@ -3,7 +3,6 @@
 import { useState, useCallback } from "react"
 import TextareaAutosize from "react-textarea-autosize"
 import { Copy, Check } from "lucide-react"
-import { cn } from "@/lib/utils"
 import {
   Card,
   CardContent,

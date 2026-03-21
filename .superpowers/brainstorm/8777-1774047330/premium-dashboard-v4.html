@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoU — v4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  :root {
+    /* Product-world tokens */
+    --void: #0a0a0b;
+    --paper: #111113;
+    --paper-raised: #161618;
+    --paper-hover: rgba(255,255,255,0.035);
+
+    --ink: #ececee;
+    --ink-secondary: #9d9da6;
+    --ink-tertiary: #5c5c66;
+    --ink-ghost: #38383f;
+
+    --rule: rgba(255,255,255,0.055);
+    --rule-strong: rgba(255,255,255,0.09);
+
+    --stamp-approved: #2dd4a0;
+    --stamp-approved-dim: rgba(45,212,160,0.08);
+    --stamp-approved-border: rgba(45,212,160,0.14);
+    --stamp-rejected: #e06c6c;
+    --stamp-rejected-dim: rgba(224,108,108,0.08);
+    --stamp-rejected-border: rgba(224,108,108,0.14);
+
+    --certainty-high: #2dd4a0;
+    --certainty-mid: #c9a227;
+    --certainty-low: #e06c6c;
+  }
+
+  body {
+    font-family: 'Geist', -apple-system, system-ui, sans-serif;
+    background: var(--void);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Noise */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px;
+  }
+
+  .app {
+    display: flex;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse 60% 45% at 10% 0%, rgba(45,212,160,0.02) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 35% at 90% 100%, rgba(45,212,160,0.012) 0%, transparent 45%);
+  }
+
+  /* ═══ SIDEBAR ═══ */
+  .sidebar {
+    width: 228px;
+    background: transparent;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: 0 6px;
+  }
+
+  .sidebar-logo {
+    padding: 18px 10px 4px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .wordmark {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+
+  .sep {
+    width: 1px;
+    height: 12px;
+    background: var(--rule-strong);
+    margin: 0 1px;
+  }
+
+  .workspace {
+    font-size: 12px;
+    font-weight: 450;
+    color: var(--ink-tertiary);
+    letter-spacing: -0.1px;
+  }
+
+  .sidebar-search {
+    margin: 10px 4px 2px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1px solid var(--rule);
+    background: rgba(255,255,255,0.012);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .sidebar-search:hover {
+    border-color: var(--rule-strong);
+    background: rgba(255,255,255,0.025);
+  }
+
+  .sidebar-search svg { color: var(--ink-ghost); width: 13px; height: 13px; }
+  .sidebar-search span { font-size: 12px; color: var(--ink-ghost); }
+  .sidebar-search kbd {
+    margin-left: auto;
+    font-size: 9px;
+    font-family: inherit;
+    color: var(--ink-ghost);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-weight: 500;
+  }
+
+  .sidebar-nav { padding: 8px 0; flex: 1; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink-tertiary);
+    cursor: pointer;
+    transition: all 0.1s;
+    font-weight: 450;
+    margin-bottom: 1px;
+  }
+
+  .nav-item:hover { color: var(--ink-secondary); background: var(--paper-hover); }
+
+  .nav-item.active {
+    color: var(--ink);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.45; }
+  .nav-item.active svg { opacity: 0.8; }
+
+  .nav-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-ghost);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .nav-rule { height: 1px; background: var(--rule); margin: 6px 10px; }
+
+  .sidebar-footer {
+    padding: 10px 4px 14px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .api-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 6px;
+  }
+
+  .api-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--stamp-approved);
+    box-shadow: 0 0 5px rgba(45,212,160,0.3);
+  }
+
+  .api-text { font-size: 11px; color: var(--ink-ghost); }
+  .api-ms {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--ink-ghost);
+    font-variant-numeric: tabular-nums;
+    font-family: 'Geist Mono', 'SF Mono', monospace;
+  }
+
+  /* ═══ MAIN ═══ */
+  .main { flex: 1; overflow-y: auto; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10,10,11,0.88);
+    backdrop-filter: blur(14px) saturate(115%);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 6px; }
+
+  .topbar-title {
+    font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px;
+  }
+
+  .topbar-pill {
+    font-size: 10px; color: var(--ink-ghost); font-weight: 500;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--rule);
+    padding: 2px 6px; border-radius: 4px;
+  }
+
+  .topbar-actions { display: flex; gap: 5px; }
+
+  .btn-s {
+    padding: 5px 10px; border-radius: 6px;
+    border: 1px solid var(--rule); background: transparent;
+    color: var(--ink-tertiary); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.1s; font-family: inherit;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  .btn-s:hover { background: var(--paper-hover); border-color: var(--rule-strong); color: var(--ink-secondary); }
+  .btn-s svg { width: 12px; height: 12px; }
+
+  .content { padding: 20px 24px 48px; }
+
+  /* ═══ METRICS — seamless strip ═══ */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .m-cell {
+    background: var(--void);
+    padding: 18px 20px;
+    transition: background 0.15s;
+  }
+
+  .m-cell:hover { background: rgba(255,255,255,0.012); }
+
+  .m-label { font-size: 11px; font-weight: 500; color: var(--ink-tertiary); margin-bottom: 6px; }
+
+  .m-num {
+    font-size: 24px; font-weight: 700; letter-spacing: -1px;
+    font-variant-numeric: tabular-nums; line-height: 1;
+    color: var(--ink);
+  }
+
+  .m-num .unit { font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--ink-secondary); }
+  .m-num.green { color: var(--stamp-approved); }
+  .m-num.red { color: var(--stamp-rejected); }
+
+  .m-sub { font-size: 10px; color: var(--ink-ghost); margin-top: 6px; font-variant-numeric: tabular-nums; }
+
+  .m-delta {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-size: 10px; font-weight: 500; color: var(--stamp-approved); margin-top: 6px;
+  }
+
+  /* ═══ CHARTS ═══ */
+  .charts {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.022) 0%, rgba(255,255,255,0.004) 100%);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 18px 12px;
+    transition: border-color 0.15s;
+  }
+
+  .card:hover { border-color: var(--rule-strong); }
+
+  .card-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .card-title { font-size: 12px; font-weight: 550; color: var(--ink-secondary); letter-spacing: -0.1px; }
+
+  .tabs {
+    display: flex; background: rgba(255,255,255,0.025); border-radius: 5px; padding: 2px; gap: 1px;
+  }
+
+  .tab {
+    padding: 2px 8px; font-size: 10px; font-weight: 500;
+    color: var(--ink-ghost); border-radius: 3px; cursor: pointer;
+  }
+
+  .tab.on { background: rgba(255,255,255,0.06); color: var(--ink-secondary); }
+
+  .chart-area { height: 180px; position: relative; }
+
+  .y-axis {
+    position: absolute; left: 0; top: 0; bottom: 22px; width: 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+
+  .y-val {
+    font-size: 9px; color: var(--ink-ghost); text-align: right; width: 22px;
+    font-family: 'Geist Mono', monospace; font-variant-numeric: tabular-nums;
+  }
+
+  .plot { position: absolute; left: 30px; right: 0; top: 0; bottom: 22px; }
+  .hz { position: absolute; left: 0; right: 0; height: 1px; background: rgba(255,255,255,0.02); }
+
+  .x-axis {
+    position: absolute; bottom: 0; left: 30px; right: 0;
+    display: flex; justify-content: space-between;
+  }
+
+  .x-val {
+    font-size: 9px; color: var(--ink-ghost);
+    font-family: 'Geist Mono', monospace;
+  }
+
+  /* Donut */
+  .donut-wrap { height: 100%; display: flex; align-items: center; justify-content: center; gap: 24px; }
+  .donut-rel { position: relative; display: flex; align-items: center; justify-content: center; }
+  .donut-svg { width: 120px; height: 120px; transform: rotate(-90deg); }
+  .donut-mid { position: absolute; display: flex; flex-direction: column; align-items: center; }
+  .donut-big { font-size: 22px; font-weight: 700; letter-spacing: -0.8px; font-variant-numeric: tabular-nums; }
+  .donut-tiny { font-size: 9px; color: var(--ink-ghost); margin-top: 1px; }
+
+  .leg { display: flex; flex-direction: column; gap: 9px; }
+  .leg-row { display: flex; align-items: center; gap: 6px; }
+  .leg-dot { width: 6px; height: 6px; border-radius: 2px; }
+  .leg-dot.g { background: var(--stamp-approved); }
+  .leg-dot.r { background: var(--stamp-rejected); }
+  .leg-name { font-size: 12px; color: var(--ink-tertiary); font-weight: 450; }
+  .leg-val {
+    font-size: 12px; color: var(--ink); font-weight: 600;
+    margin-left: auto; font-variant-numeric: tabular-nums;
+    min-width: 20px; text-align: right;
+  }
+
+  /* ═══ TABLE ═══ */
+  .tbl-wrap {
+    background: linear-gradient(180deg, rgba(255,255,255,0.018) 0%, rgba(255,255,255,0.003) 100%);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .tbl-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .tbl-top-left { display: flex; align-items: center; gap: 7px; }
+
+  .tbl-heading { font-size: 12px; font-weight: 550; color: var(--ink-secondary); }
+
+  .tbl-count {
+    font-size: 10px; color: var(--ink-ghost); font-weight: 500;
+    background: rgba(255,255,255,0.025); border: 1px solid var(--rule);
+    padding: 1px 6px; border-radius: 4px; font-variant-numeric: tabular-nums;
+  }
+
+  .tbl-filter {
+    width: 170px; padding: 5px 9px;
+    border-radius: 5px; border: 1px solid var(--rule);
+    background: rgba(255,255,255,0.012); color: var(--ink-secondary);
+    font-size: 12px; font-family: inherit; outline: none;
+  }
+
+  .tbl-filter::placeholder { color: var(--ink-ghost); }
+  .tbl-filter:focus { border-color: var(--rule-strong); }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    padding: 8px 16px; font-size: 11px; font-weight: 500;
+    color: var(--ink-ghost); text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    letter-spacing: 0.2px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+    transition: background 0.08s; cursor: pointer;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.018); }
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody td { padding: 11px 16px; font-size: 13px; color: #bbbbc4; }
+
+  .td-email {
+    max-width: 280px; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; font-weight: 450; color: var(--ink);
+  }
+
+  /* ─── STAMP: category as a status dot + text, not a badge ─── */
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .stamp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .stamp.approved .stamp-dot { background: var(--stamp-approved); box-shadow: 0 0 4px var(--stamp-approved-dim); }
+  .stamp.approved { color: var(--stamp-approved); }
+
+  .stamp.rejected .stamp-dot { background: var(--stamp-rejected); box-shadow: 0 0 4px var(--stamp-rejected-dim); }
+  .stamp.rejected { color: var(--stamp-rejected); }
+
+  /* ─── CERTAINTY: radial gauge, the signature element ─── */
+  .certainty {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .certainty-ring {
+    width: 28px;
+    height: 28px;
+    position: relative;
+  }
+
+  .certainty-ring svg {
+    width: 28px;
+    height: 28px;
+    transform: rotate(-90deg);
+  }
+
+  .certainty-ring .ring-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.04);
+    stroke-width: 2.5;
+  }
+
+  .certainty-ring .ring-fill {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s;
+  }
+
+  .certainty-ring .ring-fill.high { stroke: var(--certainty-high); }
+  .certainty-ring .ring-fill.mid { stroke: var(--certainty-mid); }
+  .certainty-ring .ring-fill.low { stroke: var(--certainty-low); }
+
+  .certainty-pct {
+    font-size: 12px;
+    font-weight: 550;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Geist Mono', monospace;
+    color: var(--ink-secondary);
+  }
+
+  .td-date {
+    color: var(--ink-ghost); font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Geist Mono', monospace;
+  }
+
+  .td-suggestion {
+    max-width: 170px; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; color: var(--ink-ghost); font-size: 12px;
+  }
+
+  .tbl-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px; border-top: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .tbl-info { font-size: 11px; color: var(--ink-ghost); font-variant-numeric: tabular-nums; }
+
+  .pager { display: flex; gap: 2px; }
+
+  .pg {
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; border: 1px solid var(--rule); background: transparent;
+    color: var(--ink-ghost); font-size: 11px; cursor: pointer; font-family: inherit;
+    font-weight: 500; transition: all 0.1s;
+  }
+
+  .pg:hover { background: var(--paper-hover); color: var(--ink-secondary); }
+  .pg.now { background: rgba(255,255,255,0.055); color: var(--ink); border-color: var(--rule-strong); }
+
+  /* ═══ VERSION TAG ═══ */
+  .vtag {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; color: var(--ink-ghost);
+    background: rgba(17,17,19,0.92); border: 1px solid var(--rule);
+    padding: 6px 14px; border-radius: 6px; z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="wordmark">AutoU</span>
+      <span class="sep"></span>
+      <span class="workspace">Workspace</span>
+    </div>
+
+    <div class="sidebar-search">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.2"/><path d="M10 10l3.5 3.5"/></svg>
+      <span>Buscar...</span>
+      <kbd>&#8984;K</kbd>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-item active">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="3.5" rx="1"/><rect x="9" y="7.5" width="5" height="6.5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/></svg>
+        Visao geral
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 8h8"/><path d="M8 4v8"/></svg>
+        Classificar
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 5h10M3 8h10M3 11h6"/></svg>
+        Historico
+        <span class="nav-count">40</span>
+      </div>
+
+      <div class="nav-rule"></div>
+
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="4" width="12" height="9" rx="1.5"/><path d="M2 6.5l6 3.5 6-3.5"/></svg>
+        Lote
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3.5h2.5"/></svg>
+        Atividade
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="api-row">
+        <div class="api-dot"></div>
+        <span class="api-text">API conectada</span>
+        <span class="api-ms">42ms</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">Visao geral</span>
+        <span class="topbar-pill">30 dias</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-s">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M8 2v12M4 6l4-4 4 4"/></svg>
+          Seed
+        </button>
+        <button class="btn-s" style="padding: 5px 7px;">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="3.5" r="1"/><circle cx="8" cy="8" r="1"/><circle cx="8" cy="12.5" r="1"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- METRICS -->
+      <div class="metrics">
+        <div class="m-cell">
+          <div class="m-label">Total classificados</div>
+          <div class="m-num">40</div>
+          <div class="m-delta">+12 esta semana</div>
+        </div>
+        <div class="m-cell">
+          <div class="m-label">Produtivos</div>
+          <div class="m-num green">60<span class="unit">%</span></div>
+          <div class="m-sub">24 de 40 emails</div>
+        </div>
+        <div class="m-cell">
+          <div class="m-label">Improdutivos</div>
+          <div class="m-num red">40<span class="unit">%</span></div>
+          <div class="m-sub">16 de 40 emails</div>
+        </div>
+        <div class="m-cell">
+          <div class="m-label">Confianca media</div>
+          <div class="m-num">88<span class="unit">%</span></div>
+          <div class="m-delta">+2.4% vs. anterior</div>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Volume ao longo do tempo</span>
+            <div class="tabs">
+              <div class="tab">7d</div>
+              <div class="tab on">30d</div>
+              <div class="tab">90d</div>
+            </div>
+          </div>
+          <div class="chart-area">
+            <div class="line-chart-area" style="height:100%">
+              <div class="y-axis">
+                <span class="y-val">8</span>
+                <span class="y-val">6</span>
+                <span class="y-val">4</span>
+                <span class="y-val">2</span>
+                <span class="y-val">0</span>
+              </div>
+              <div class="plot">
+                <div class="hz" style="top:0%"></div>
+                <div class="hz" style="top:25%"></div>
+                <div class="hz" style="top:50%"></div>
+                <div class="hz" style="top:75%"></div>
+                <div class="hz" style="top:100%"></div>
+                <svg width="100%" height="100%" viewBox="0 0 500 160" preserveAspectRatio="none" style="position:absolute;top:0;left:0;">
+                  <defs>
+                    <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#2dd4a0" stop-opacity="0.1"/>
+                      <stop offset="100%" stop-color="#2dd4a0" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,135 C35,125 55,115 85,95 C115,75 135,90 165,80 C195,70 215,55 245,45 C275,35 295,50 325,40 C355,30 375,20 405,25 C435,30 465,10 500,5 L500,160 L0,160 Z" fill="url(#gf)"/>
+                  <path d="M0,135 C35,125 55,115 85,95 C115,75 135,90 165,80 C195,70 215,55 245,45 C275,35 295,50 325,40 C355,30 375,20 405,25 C435,30 465,10 500,5" fill="none" stroke="#2dd4a0" stroke-width="1.5"/>
+                  <circle cx="500" cy="5" r="2.5" fill="#2dd4a0"/>
+                </svg>
+              </div>
+              <div class="x-axis">
+                <span class="x-val">01 mar</span>
+                <span class="x-val">06 mar</span>
+                <span class="x-val">11 mar</span>
+                <span class="x-val">16 mar</span>
+                <span class="x-val">20 mar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Distribuicao</span>
+          </div>
+          <div class="chart-area">
+            <div class="donut-wrap">
+              <div class="donut-rel">
+                <svg class="donut-svg" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="46" class="ring-bg" stroke-width="9" fill="none" stroke="rgba(255,255,255,0.03)"/>
+                  <circle cx="60" cy="60" r="46" fill="none" stroke="#2dd4a0" stroke-width="9" stroke-dasharray="173.4 115.6" stroke-linecap="round"/>
+                  <circle cx="60" cy="60" r="46" fill="none" stroke="#e06c6c" stroke-width="9" stroke-dasharray="115.6 173.4" stroke-dashoffset="-173.4" stroke-linecap="round"/>
+                </svg>
+                <div class="donut-mid">
+                  <span class="donut-big">40</span>
+                  <span class="donut-tiny">total</span>
+                </div>
+              </div>
+              <div class="leg">
+                <div class="leg-row">
+                  <div class="leg-dot g"></div>
+                  <span class="leg-name">Produtivo</span>
+                  <span class="leg-val">24</span>
+                </div>
+                <div class="leg-row">
+                  <div class="leg-dot r"></div>
+                  <span class="leg-name">Improdutivo</span>
+                  <span class="leg-val">16</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="tbl-wrap">
+        <div class="tbl-top">
+          <div class="tbl-top-left">
+            <span class="tbl-heading">Emails recentes</span>
+            <span class="tbl-count">40</span>
+          </div>
+          <input class="tbl-filter" placeholder="Filtrar emails..." />
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Categoria</th>
+              <th>Confianca</th>
+              <th>Sugestao</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="td-email">Confirme combinado com o departamento juridico e envie...</span></td>
+              <td>
+                <span class="stamp approved">
+                  <span class="stamp-dot"></span>
+                  Produtivo
+                </span>
+              </td>
+              <td>
+                <span class="certainty">
+                  <span class="certainty-ring">
+                    <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" class="ring-bg"/><circle cx="14" cy="14" r="11" class="ring-fill high" stroke-dasharray="60.8 8.3"/></svg>
+                  </span>
+                  <span class="certainty-pct">88%</span>
+                </span>
+              </td>
+              <td><span class="td-suggestion">Obrigado pelo contato, segue...</span></td>
+              <td><span class="td-date">20 mar</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-email">Nosso contrato de suporte e manutencao da aplicacao...</span></td>
+              <td>
+                <span class="stamp approved">
+                  <span class="stamp-dot"></span>
+                  Produtivo
+                </span>
+              </td>
+              <td>
+                <span class="certainty">
+                  <span class="certainty-ring">
+                    <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" class="ring-bg"/><circle cx="14" cy="14" r="11" class="ring-fill high" stroke-dasharray="62.9 6.2"/></svg>
+                  </span>
+                  <span class="certainty-pct">91%</span>
+                </span>
+              </td>
+              <td><span class="td-suggestion">Prezado, agradecemos o envio...</span></td>
+              <td><span class="td-date">19 mar</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-email">Preciso agendar uma reuniao para revisar o escopo do...</span></td>
+              <td>
+                <span class="stamp rejected">
+                  <span class="stamp-dot"></span>
+                  Improdutivo
+                </span>
+              </td>
+              <td>
+                <span class="certainty">
+                  <span class="certainty-ring">
+                    <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" class="ring-bg"/><circle cx="14" cy="14" r="11" class="ring-fill mid" stroke-dasharray="49.8 19.3"/></svg>
+                  </span>
+                  <span class="certainty-pct">72%</span>
+                </span>
+              </td>
+              <td><span class="td-suggestion">Obrigado pela mensagem, no ent...</span></td>
+              <td><span class="td-date">19 mar</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-email">Necessitamos de uma analise completa dos indicadores...</span></td>
+              <td>
+                <span class="stamp approved">
+                  <span class="stamp-dot"></span>
+                  Produtivo
+                </span>
+              </td>
+              <td>
+                <span class="certainty">
+                  <span class="certainty-ring">
+                    <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" class="ring-bg"/><circle cx="14" cy="14" r="11" class="ring-fill high" stroke-dasharray="65.7 3.4"/></svg>
+                  </span>
+                  <span class="certainty-pct">95%</span>
+                </span>
+              </td>
+              <td><span class="td-suggestion">Prezado, confirmo o recebimento...</span></td>
+              <td><span class="td-date">18 mar</span></td>
+            </tr>
+            <tr>
+              <td><span class="td-email">Envio automatizado de NFe falhou no lote de ontem...</span></td>
+              <td>
+                <span class="stamp approved">
+                  <span class="stamp-dot"></span>
+                  Produtivo
+                </span>
+              </td>
+              <td>
+                <span class="certainty">
+                  <span class="certainty-ring">
+                    <svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" class="ring-bg"/><circle cx="14" cy="14" r="11" class="ring-fill high" stroke-dasharray="61.5 7.6"/></svg>
+                  </span>
+                  <span class="certainty-pct">89%</span>
+                </span>
+              </td>
+              <td><span class="td-suggestion">Ja estamos cientes da situacao...</span></td>
+              <td><span class="td-date">18 mar</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="tbl-bottom">
+          <span class="tbl-info">1 — 10 de 40</span>
+          <div class="pager">
+            <button class="pg now">1</button>
+            <button class="pg">2</button>
+            <button class="pg">3</button>
+            <button class="pg">4</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="vtag">v4 — product tokens + signature confidence</div>
+</body>
+</html>

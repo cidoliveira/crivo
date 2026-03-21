@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import {
-  LineChart,
+  ComposedChart,
   Line,
   Area,
   XAxis,
@@ -48,7 +48,7 @@ export function ClassificationsLineChart({ data }: ClassificationsLineChartProps
         ))}
       </div>
       <ResponsiveContainer width="100%" height={180}>
-        <LineChart data={filtered} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
+        <ComposedChart data={filtered} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#2dd4a0" stopOpacity={0.1} />
@@ -75,7 +75,7 @@ export function ClassificationsLineChart({ data }: ClassificationsLineChartProps
           <Line type="monotone" dataKey="count" stroke="#2dd4a0" strokeWidth={2}
             dot={{ fill: '#2dd4a0', r: 2, strokeWidth: 0 }}
             activeDot={{ fill: '#2dd4a0', r: 4, strokeWidth: 2, stroke: 'var(--paper)' }} />
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   )

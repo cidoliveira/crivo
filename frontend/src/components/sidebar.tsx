@@ -236,7 +236,7 @@ export function Sidebar() {
             marginLeft: "auto",
           }}
         >
-          42ms
+          {health.data?.latencyMs ?? "--"}ms
         </span>
       </div>
     </aside>

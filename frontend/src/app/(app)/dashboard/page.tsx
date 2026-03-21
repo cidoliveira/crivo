@@ -81,7 +81,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Topbar title="Visao geral" pill="30 dias">
+      <Topbar title="Visão geral" pill="30 dias">
         {health.isSuccess && <SeedButton />}
       </Topbar>
 
@@ -107,7 +107,7 @@ export default function DashboardPage() {
           className="animate-fade-up grid grid-cols-1 lg:grid-cols-[1.55fr_1fr] gap-2.5"
           style={{ animationDelay: `${1 * 60}ms` }}
         >
-          <ChartCard title="Classificacoes diarias">
+          <ChartCard title="Classificações diárias">
             {metrics.isSuccess ? (
               <ClassificationsLineChart data={metrics.data.daily_series} />
             ) : (
@@ -115,7 +115,7 @@ export default function DashboardPage() {
             )}
           </ChartCard>
 
-          <ChartCard title="Distribuicao">
+          <ChartCard title="Distribuição">
             {metrics.isSuccess ? (
               <DonutChart
                 produtivo={metrics.data.by_label?.Produtivo ?? 0}
@@ -136,8 +136,8 @@ export default function DashboardPage() {
             isEmpty ? (
               <TableCard>
                 <EmptyState
-                  title="Nenhuma classificacao ainda"
-                  description="Classifique emails ou carregue dados demo para comecar"
+                  title="Nenhuma classificação ainda"
+                  description="Classifique emails ou carregue dados demo para começar"
                 />
               </TableCard>
             ) : (

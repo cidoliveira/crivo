@@ -51,12 +51,12 @@ export function WarmupOverlay() {
         <div className="flex flex-col items-center gap-2">
           <p className="text-base font-medium text-foreground">
             {showSlowMessage
-              ? "Isso pode levar ate 1 minuto..."
+              ? "Isso pode levar até 1 minuto..."
               : "Conectando ao motor de IA..."}
           </p>
           <p className="text-sm text-muted-foreground">
             {showSlowMessage
-              ? "O servidor esta iniciando. Aguarde ou tente novamente."
+              ? "O servidor está iniciando. Aguarde ou tente novamente."
               : "Aguarde enquanto o servidor inicia"}
           </p>
         </div>

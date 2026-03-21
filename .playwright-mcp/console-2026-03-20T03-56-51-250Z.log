@@ -1,0 +1,63 @@
+[     417ms] [ERROR] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). @ http://localhost:3000/_next/static/chunks/09h0_next_dist_0pvqlh8._.js:3272
+[     451ms] Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <RedirectBoundary>
+      <RedirectErrorBoundary router={{...}}>
+        <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+          <SegmentViewNode type="page" pagePath="page.tsx">
+            <SegmentTrieNode>
+            <ClientPageRoot Component={function DashboardPage} serverProvidedParams={{...}}>
+              <DashboardPage params={Promise} searchParams={Promise}>
+                <div className="min-h-scre...">
+                  <WarmupOverlay>
+                  <header className="border-b b...">
+                    <div className="mx-auto ma...">
+                      <div>
+                      <div className="flex items...">
+                        <ThemeToggle>
+                          <Button variant="ghost" size="icon" className="size-10" onClick={function onClick} ...>
+                            <Button data-slot="button" className={"group/bu..."} onClick={function onClick} ...>
+                              <button
+                                type="button"
+                                onClick={function onClick}
+                                onMouseDown={function onMouseDown}
+                                onKeyDown={function}
+                                onKeyUp={function onKeyUp}
+                                onPointerDown={function onPointerDown}
+                                tabIndex={0}
+                                disabled={false}
+                                data-slot="button"
++                               aria-label="Mudar para modo claro"
+-                               aria-label="Mudar para modo escuro"
+                                ref={function}
+                                className={"group/button inline-flex shrink-0 items-center justify-center rounded-lg ..."}
+                              >
+                                <SunIcon>
+                                  <svg xmlns="http://www..." width="18" height="18" viewBox="0 0 24 24" fill="none" ...>
++                                   <circle cx="12" cy="12" r="4">
+-                                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z">
+                                    ...
+                  ...
+          ...
+        ...
+
+    at throwOnHydrationMismatch (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:3318:56)
+    at beginWork (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:6758:918)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:9555:97)
+    at workLoopConcurrentByScheduler (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:9551:58)
+    at renderRootConcurrent (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:9534:71)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_react-dom_07l-4hr._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/09h0_next_dist_compiled_0q9j3nz._.js:2647:64)
