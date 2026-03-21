@@ -18,6 +18,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { type EmailRow, type EmailsData } from "@/hooks/use-emails"
 import { EmptyState } from "./empty-state"
+import { Stamp } from "./stamp"
+import { CertaintyRing } from "./certainty-ring"
 
 interface EmailsTableProps {
   data: EmailsData
@@ -30,19 +32,11 @@ function truncate(text: string, max = 60): string {
   return text.length <= max ? text : text.slice(0, max) + "..."
 }
 
-const labelStyles: Record<string, string> = {
-  Produtivo: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
-  Improdutivo: "bg-red-400/10 text-red-700 dark:text-red-400 border-red-400/20",
-}
-
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr)
-  return date.toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+  return date.toLocaleDateString("pt-BR", {
+    day: "numeric",
+    month: "short",
   })
 }
 
@@ -94,17 +88,10 @@ export function EmailsTable({ data, page, onPageChange, onClassifyClick }: Email
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span
-                        className={[
-                          "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
-                          labelStyles[row.label] ?? "border-border",
-                        ].join(" ")}
-                      >
-                        {row.label}
-                      </span>
+                      <Stamp label={row.label as "Produtivo" | "Improdutivo"} />
                     </TableCell>
-                    <TableCell className="tabular-nums">
-                      {Math.round(row.confidence * 100)}%
+                    <TableCell>
+                      <CertaintyRing confidence={Math.round(row.confidence * 100)} />
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm max-w-0">
                       <span className="block truncate">{suggestionPreview}</span>
@@ -155,18 +142,12 @@ export function EmailsTable({ data, page, onPageChange, onClassifyClick }: Email
                   {selected.subject || "Email sem assunto"}
                 </DialogTitle>
                 <div className="flex items-center gap-3 pt-1">
-                  <span
-                    className={[
-                      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                      labelStyles[selected.label] ?? "border-border",
-                    ].join(" ")}
-                  >
-                    {selected.label}
+                  <Stamp label={selected.label as "Produtivo" | "Improdutivo"} />
+                  <CertaintyRing confidence={Math.round(selected.confidence * 100)} />
+                  <span className="text-xs" style={{ color: 'var(--ink-ghost)' }}>
+                    confiança
                   </span>
-                  <span className="text-xs text-muted-foreground tabular-nums">
-                    {Math.round(selected.confidence * 100)}% confianca
-                  </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs" style={{ color: 'var(--ink-tertiary)' }}>
                     {formatDate(selected.created_at)}
                   </span>
                 </div>

@@ -12,32 +12,12 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { ClassifyResponse } from "@/hooks/use-classify"
+import { CertaintyRing } from "./certainty-ring"
+import { Stamp } from "./stamp"
 
 interface ResultCardProps {
   result: ClassifyResponse
   onReset: () => void
-}
-
-function getConfidenceColor(pct: number): {
-  badgeClass: string
-  barClass: string
-} {
-  if (pct >= 85) {
-    return {
-      badgeClass: "bg-emerald-500/90 text-white",
-      barClass: "bg-emerald-500",
-    }
-  }
-  if (pct >= 60) {
-    return {
-      badgeClass: "bg-amber-500/90 text-white",
-      barClass: "bg-amber-500",
-    }
-  }
-  return {
-    badgeClass: "bg-red-400/90 text-white",
-    barClass: "bg-red-400",
-  }
 }
 
 function CopyButton({ text }: { text: string }) {
@@ -71,7 +51,6 @@ function CopyButton({ text }: { text: string }) {
 
 export function ResultCard({ result, onReset }: ResultCardProps) {
   const pct = Math.round(result.confidence * 100)
-  const { badgeClass, barClass } = getConfidenceColor(pct)
   const [suggestionText, setSuggestionText] = useState(result.suggestion)
 
   return (
@@ -85,27 +64,12 @@ export function ResultCard({ result, onReset }: ResultCardProps) {
         <CardContent className="flex flex-col gap-4">
           {/* Label badge */}
           <div>
-            <span
-              className={cn(
-                "inline-block rounded-full px-3 py-1 text-sm font-medium",
-                badgeClass
-              )}
-            >
-              {result.label}
-            </span>
+            <Stamp label={result.label as "Produtivo" | "Improdutivo"} />
           </div>
 
-          {/* Confidence bar */}
+          {/* Confidence */}
           <div className="flex items-center gap-3">
-            <div className="h-2.5 flex-1 rounded-full bg-muted overflow-hidden">
-              <div
-                className={cn("h-full rounded-full transition-all", barClass)}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <span className="text-sm font-medium tabular-nums w-10 text-right">
-              {pct}%
-            </span>
+            <CertaintyRing confidence={pct} />
           </div>
 
           {/* Explanation */}

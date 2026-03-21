@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { BatchItemResult, BatchSummary, BatchStatus } from "@/hooks/use-batch-classify"
+import { Stamp } from "./stamp"
 
 interface BatchResultsProps {
   status: BatchStatus
@@ -17,12 +18,6 @@ interface BatchResultsProps {
   error: string | null
   onCancel: () => void
   onReset: () => void
-}
-
-// Static lookup to avoid Tailwind v4 purging dynamic class strings
-const LABEL_STYLES: Record<string, string> = {
-  Produtivo: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
-  Improdutivo: "bg-red-400/10 text-red-700 dark:text-red-400 border-red-400/20",
 }
 
 function truncate(text: string, max = 60): string {
@@ -73,14 +68,14 @@ export function BatchResults({
               </div>
               <div className="flex flex-col gap-0.5">
                 <span className="text-xs text-muted-foreground">Sucesso</span>
-                <span className="text-lg font-semibold text-green-600 dark:text-green-400">
+                <span className="text-lg font-semibold" style={{ color: 'var(--stamp-approved)' }}>
                   {summary.successful}
                 </span>
               </div>
               {summary.failed > 0 && (
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs text-muted-foreground">Falhas</span>
-                  <span className="text-lg font-semibold text-red-600 dark:text-red-400">
+                  <span className="text-lg font-semibold" style={{ color: 'var(--stamp-rejected)' }}>
                     {summary.failed}
                   </span>
                 </div>
@@ -97,14 +92,9 @@ export function BatchResults({
             {Object.keys(summary.by_label).length > 0 && (
               <div className="flex flex-wrap gap-2 justify-center">
                 {Object.entries(summary.by_label).map(([label, count]) => (
-                  <span
-                    key={label}
-                    className={[
-                      "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium",
-                      LABEL_STYLES[label] ?? "border-border",
-                    ].join(" ")}
-                  >
-                    {label}: {count}
+                  <span key={label} className="inline-flex items-center gap-1.5 text-xs">
+                    <Stamp label={label as "Produtivo" | "Improdutivo"} />
+                    <span style={{ color: 'var(--ink-tertiary)' }}>: {count}</span>
                   </span>
                 ))}
               </div>
@@ -135,13 +125,8 @@ export function BatchResults({
                       Erro
                     </span>
                   ) : (
-                    <span
-                      className={[
-                        "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium shrink-0",
-                        LABEL_STYLES[item.label] ?? "border-border",
-                      ].join(" ")}
-                    >
-                      {item.label}
+                    <span className="shrink-0">
+                      <Stamp label={item.label as "Produtivo" | "Improdutivo"} />
                     </span>
                   )}
                   {!item.error && (
@@ -219,13 +204,8 @@ export function BatchResults({
                     Erro
                   </span>
                 ) : (
-                  <span
-                    className={[
-                      "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium shrink-0",
-                      LABEL_STYLES[item.label] ?? "border-border",
-                    ].join(" ")}
-                  >
-                    {item.label}
+                  <span className="shrink-0">
+                    <Stamp label={item.label as "Produtivo" | "Improdutivo"} />
                   </span>
                 )}
                 {!item.error && (

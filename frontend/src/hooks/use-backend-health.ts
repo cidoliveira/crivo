@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { BACKEND_URL } from "@/lib/api"
 
-async function checkHealth(): Promise<{ status: string }> {
+async function checkHealth(): Promise<{ status: string; latencyMs: number }> {
+  const start = performance.now()
   const res = await fetch(`${BACKEND_URL}/api/health`)
+  const latencyMs = Math.round(performance.now() - start)
   if (!res.ok) {
     throw new Error(`Health check failed: ${res.status}`)
   }
-  return res.json()
+  const data = await res.json()
+  return { ...data, latencyMs }
 }
 
 export function useBackendHealth() {
