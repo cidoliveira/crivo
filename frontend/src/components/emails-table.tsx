@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Archive, Reply } from "lucide-react"
 import { type EmailRow, type EmailsData } from "@/hooks/use-emails"
 import { EmptyState } from "./empty-state"
 import { Stamp } from "./stamp"
@@ -73,6 +74,7 @@ export function EmailsTable({ data, page, onPageChange, onClassifyClick }: Email
               </TableRow>
             ) : (
               data.items.map((row) => {
+                const isNoReply = row.suggestion?.startsWith("Ação interna:") ?? false
                 const suggestionPreview = row.suggestion
                   ? truncate(row.suggestion.split("\n")[0], 40)
                   : "\u2014"
@@ -94,7 +96,14 @@ export function EmailsTable({ data, page, onPageChange, onClassifyClick }: Email
                       <CertaintyRing confidence={Math.round(row.confidence * 100)} />
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm max-w-0">
-                      <span className="block truncate">{suggestionPreview}</span>
+                      <span className="flex items-center gap-1.5 truncate">
+                        {isNoReply ? (
+                          <Archive className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                        ) : row.suggestion ? (
+                          <Reply className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+                        ) : null}
+                        <span className="truncate">{suggestionPreview}</span>
+                      </span>
                     </TableCell>
                     <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
                       {formatDate(row.created_at)}
@@ -164,17 +173,28 @@ export function EmailsTable({ data, page, onPageChange, onClassifyClick }: Email
                   </div>
                 </div>
 
-                {/* Suggestion */}
-                {selected.suggestion && (
-                  <div>
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      Sugestão de resposta
-                    </span>
-                    <div className="mt-2 rounded-lg border border-border bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-wrap">
-                      {selected.suggestion}
+                {/* Suggestion or internal action */}
+                {selected.suggestion && (() => {
+                  const isSelectedNoReply = selected.suggestion.startsWith("Ação interna:")
+                  return (
+                    <div>
+                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        {isSelectedNoReply ? "Ação interna sugerida" : "Sugestão de resposta"}
+                      </span>
+                      {isSelectedNoReply && (
+                        <div className="mt-2 flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2">
+                          <Archive className="h-4 w-4 shrink-0 text-amber-500" />
+                          <span className="text-xs text-amber-600 dark:text-amber-400">
+                            Este email é automático e não aceita respostas diretas
+                          </span>
+                        </div>
+                      )}
+                      <div className="mt-2 rounded-lg border border-border bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-wrap">
+                        {selected.suggestion}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )
+                })()}
               </div>
             </>
           )}

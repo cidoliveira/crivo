@@ -12,7 +12,15 @@ from app.classification.schemas import (
     BatchItemResult,
     BatchProgressEvent,
 )
-from app.classification.service import classify_email_text, build_explanation, build_suggestion, MODEL_ID
+from app.classification.service import (
+    classify_email_text,
+    build_explanation,
+    build_suggestion,
+    detect_no_reply,
+    detect_email_type,
+    extract_entities,
+    MODEL_ID,
+)
 from app.database import get_db
 from app.emails.models import Email
 from app.classification.models import Classification
@@ -37,12 +45,16 @@ async def classify_email(
     except ValueError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 
+    no_reply = detect_no_reply("", text)
+    email_type = detect_email_type(label, text, "", no_reply)
+    entities = extract_entities(text)
+
     email = Email(subject="", body_text=text)
     db.add(email)
     await db.flush()
 
     explanation = build_explanation(label, confidence)
-    suggestion = build_suggestion(label, text)
+    suggestion = build_suggestion(label, text, "", no_reply, email_type, entities)
 
     clf = Classification(
         email_id=email.id,
@@ -62,6 +74,7 @@ async def classify_email(
         confidence=confidence,
         explanation=explanation,
         suggestion=suggestion,
+        no_reply=no_reply,
         inference_ms=inference_ms,
     )
 
@@ -89,6 +102,7 @@ async def classify_batch(
                 label="",
                 confidence=0.0,
                 suggestion="",
+                no_reply=False,
                 inference_ms=0,
                 error="Texto vazio ignorado.",
             )
@@ -110,6 +124,7 @@ async def classify_batch(
                 label="",
                 confidence=0.0,
                 suggestion="",
+                no_reply=False,
                 inference_ms=0,
                 error=str(exc),
             )
@@ -120,11 +135,15 @@ async def classify_batch(
             )
             continue
 
+        no_reply = detect_no_reply("", stripped)
+        email_type = detect_email_type(label, stripped, "", no_reply)
+        entities = extract_entities(stripped)
+
         email = Email(subject="", body_text=stripped, batch_id=batch_uuid)
         db.add(email)
         await db.flush()
 
-        suggestion = build_suggestion(label, stripped)
+        suggestion = build_suggestion(label, stripped, "", no_reply, email_type, entities)
 
         clf = Classification(
             email_id=email.id,
@@ -147,6 +166,7 @@ async def classify_batch(
             label=label,
             confidence=confidence,
             suggestion=suggestion,
+            no_reply=no_reply,
             inference_ms=inference_ms,
         )
         results.append(item)

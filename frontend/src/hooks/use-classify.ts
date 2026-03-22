@@ -11,6 +11,7 @@ export interface ClassifyResponse {
   confidence: number
   explanation: string
   suggestion: string
+  no_reply: boolean
   inference_ms: number
 }
 

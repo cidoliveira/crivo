@@ -11,7 +11,8 @@ class ClassifyResponse(BaseModel):
     label: str           # "Produtivo" or "Improdutivo"
     confidence: float    # 0.0 - 1.0
     explanation: str     # PT-BR template string
-    suggestion: str      # PT-BR suggested response template
+    suggestion: str      # PT-BR suggested response template or internal action
+    no_reply: bool       # True if automated/no-reply email
     inference_ms: int
 
 
@@ -44,7 +45,8 @@ class BatchItemResult(BaseModel):
     classification_id: str  # UUID string of persisted Classification row
     label: str           # "Produtivo" or "Improdutivo"
     confidence: float    # 0.0 - 1.0
-    suggestion: str      # PT-BR response template
+    suggestion: str      # PT-BR response template or internal action
+    no_reply: bool       # True if automated/no-reply email
     inference_ms: int    # HF API latency
     error: str | None = None  # set if this item failed
 

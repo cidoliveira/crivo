@@ -12,6 +12,7 @@ export interface BatchItemResult {
   label: string
   confidence: number
   suggestion: string
+  no_reply: boolean
   inference_ms: number
   error: string | null
 }

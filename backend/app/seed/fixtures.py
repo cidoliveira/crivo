@@ -613,12 +613,9 @@ SEED_FIXTURES = [
         0.91,
         1850,
         (
-            "Prezados,\n\n"
-            "Agradecemos o envio da newsletter semanal. As informações sobre as "
-            "decisões do Copom e o cenário macroeconômico são úteis para nossas "
-            "análises internas.\n\n"
-            "Continuem enviando as próximas edições.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Avaliar relevância de \"Newsletter Semanal — Mercado "
+            "Financeiro Brasileiro\" para a equipe. Se pertinente, encaminhar "
+            "internamente."
         ),
     ),
     _improd(
@@ -634,14 +631,7 @@ SEED_FIXTURES = [
         "noreply@bancoexemplo.com.br",
         0.89,
         1120,
-        (
-            "Prezados,\n\n"
-            "Confirmamos o recebimento da notificação sobre a disponibilidade do "
-            "extrato bancário de janeiro. Já acessaremos o documento pelo internet "
-            "banking para conferência.\n\n"
-            "Obrigado pela notificação.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
-        ),
+        "Ação interna: Baixar extrato de janeiro e arquivar em Financeiro/Conciliação. Conferir saldo com controle interno.",
     ),
     _improd(
         26,
@@ -658,12 +648,9 @@ SEED_FIXTURES = [
         0.88,
         960,
         (
-            "Prezados,\n\n"
-            "Agradecemos o alerta de segurança referente ao acesso detectado em "
-            "17/02/2026. Confirmamos que o acesso foi realizado por nossa equipe a "
-            "partir de São Paulo, SP, sendo portanto legítimo.\n\n"
-            "Obrigado pelo monitoramento.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Verificar legitimidade do acesso detectado em 17/02/2026 "
+            "(Chrome / Windows 11, São Paulo). Se legítimo, nenhuma ação necessária. "
+            "Caso contrário, acionar bloqueio imediato e registrar no log de segurança."
         ),
     ),
     _improd(
@@ -681,14 +668,7 @@ SEED_FIXTURES = [
         "transações@bancoexemplo.com.br",
         0.92,
         870,
-        (
-            "Prezados,\n\n"
-            "Confirmamos o recebimento do comprovante de TED no valor de R$ 5.000,00 "
-            "para Fornecedor XYZ Ltda realizada em 18/02/2026. O comprovante foi "
-            "arquivado para fins de conciliação bancária.\n\n"
-            "Obrigado.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
-        ),
+        "Ação interna: Arquivar comprovante de R$ 5.000,00 (TED para Fornecedor XYZ Ltda em 18/02/2026) em Financeiro/Conciliação bancária.",
     ),
     _improd(
         28,
@@ -706,13 +686,9 @@ SEED_FIXTURES = [
         0.85,
         1430,
         (
-            "Prezados,\n\n"
-            "Agradecemos o convite para o webinar 'Tendências em Fintechs para 2026'. "
-            "Os temas sobre Open Finance e IA no crédito são de interesse da nossa "
-            "equipe.\n\n"
-            "Verificaremos a disponibilidade interna e, havendo interesse, faremos "
-            "a inscrição pelo link informado.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Avaliar relevância de \"Tendências em Fintechs para 2026\" "
+            "(Open Finance, IA no crédito, BaaS) para a equipe. Data: 25/02/2026. "
+            "Se pertinente, encaminhar internamente."
         ),
     ),
     _improd(
@@ -730,11 +706,9 @@ SEED_FIXTURES = [
         0.87,
         1280,
         (
-            "Prezados,\n\n"
-            "Agradecemos o envio da oferta do CDB com 115% do CDI. Tomaremos nota "
-            "das condições para eventual avaliação junto à nossa área de tesouraria.\n\n"
-            "Caso haja interesse, entraremos em contato diretamente.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Avaliar relevância de \"CDB 115% CDI — Banco Investimentos BR\" "
+            "(mín. R$ 10.000, 12 meses, até 28/02/2026) para a equipe. "
+            "Se pertinente, encaminhar internamente."
         ),
     ),
     _improd(
@@ -754,12 +728,9 @@ SEED_FIXTURES = [
         0.90,
         1680,
         (
-            "Prezados,\n\n"
-            "Agradecemos o envio do relatório semanal de portfólio consolidado em "
-            "15/02/2026. Os dados de performance serão repassados à equipe de "
-            "investimentos para acompanhamento.\n\n"
-            "Continuem enviando os relatórios semanais normalmente.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Arquivar relatório semanal de portfólio (15/02/2026, "
+            "total R$ 552.680,00, +0,3%) para referência. Encaminhar à equipe "
+            "de investimentos para acompanhamento."
         ),
     ),
     _improd(
@@ -775,14 +746,7 @@ SEED_FIXTURES = [
         "noreply@bancoexemplo.com.br",
         0.93,
         790,
-        (
-            "Prezados,\n\n"
-            "Confirmamos o recebimento da notificação sobre a disponibilidade do "
-            "informe de rendimentos 2025. Realizaremos o download pelo link indicado "
-            "para uso na declaração do IR 2026.\n\n"
-            "Obrigado pela comunicação.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
-        ),
+        "Ação interna: Baixar informe de rendimentos ano-base 2025 e encaminhar para Contabilidade antes de 30/04/2026.",
     ),
     _improd(
         32,
@@ -800,12 +764,9 @@ SEED_FIXTURES = [
         0.86,
         1540,
         (
-            "Prezados,\n\n"
-            "Agradecemos o envio da análise macroeconômica de fevereiro 2026. Os dados "
-            "sobre PIB, câmbio e perspectivas para o primeiro semestre são relevantes "
-            "para nossas projeções internas.\n\n"
-            "A análise foi encaminhada à equipe econômica para referência.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Avaliar relevância de \"Análise Macroeconômica Fevereiro 2026\" "
+            "(PIB 2,1%, câmbio +3,2%, perspectivas 2026) para a equipe. "
+            "Se pertinente, encaminhar internamente."
         ),
     ),
     _improd(
@@ -824,12 +785,8 @@ SEED_FIXTURES = [
         0.88,
         910,
         (
-            "Prezados,\n\n"
-            "Confirmamos o recebimento do aviso de fatura do cartão corporativo no "
-            "valor de R$ 12.847,35 com vencimento em 05/03. Consultaremos os "
-            "lançamentos detalhados pelo app para conferência.\n\n"
-            "Obrigado pela notificação.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Conferir lançamentos da fatura corporativa (R$ 12.847,35, "
+            "venc. 05/03/2026) no app. Arquivar em Financeiro/Contas a Pagar."
         ),
     ),
     _improd(
@@ -847,12 +804,8 @@ SEED_FIXTURES = [
         0.84,
         1060,
         (
-            "Prezados,\n\n"
-            "Confirmamos o recebimento do e-mail de boas-vindas da plataforma "
-            "AutoInvest. Já realizamos o primeiro acesso e ativaremos a autenticação "
-            "em dois fatores conforme recomendado.\n\n"
-            "Obrigado.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Confirmar primeiro acesso à plataforma AutoInvest e "
+            "ativar autenticação em dois fatores. Arquivar credenciais de forma segura."
         ),
     ),
     _improd(
@@ -870,12 +823,8 @@ SEED_FIXTURES = [
         0.82,
         1150,
         (
-            "Prezados,\n\n"
-            "Agradecemos o envio da pesquisa de satisfação referente ao atendimento "
-            "de 15/02/2026. Responderemos o questionário pelo link informado assim "
-            "que possível.\n\n"
-            "Obrigado pela iniciativa de colher nosso feedback.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Avaliar se vale responder a pesquisa de satisfação "
+            "(atendimento de 15/02/2026). Arquivar para referência."
         ),
     ),
     _improd(
@@ -895,12 +844,8 @@ SEED_FIXTURES = [
         0.80,
         1380,
         (
-            "Prezados,\n\n"
-            "Agradecemos a comunicação sobre a atualização dos Termos de Uso e "
-            "Política de Privacidade em conformidade com a LGPD. Encaminharemos o "
-            "documento ao nosso departamento jurídico para ciência.\n\n"
-            "Obrigado pelo aviso.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Encaminhar atualização de Termos de Uso e Política de "
+            "Privacidade (LGPD, vigor em 01/03/2026) ao departamento jurídico para ciência."
         ),
     ),
     _improd(
@@ -918,12 +863,8 @@ SEED_FIXTURES = [
         0.83,
         820,
         (
-            "Prezados,\n\n"
-            "Agradecemos o lembrete de vencimento da apólice de seguro de vida em "
-            "grupo n. SV-2025-44123. Confirmamos que o débito automático está "
-            "cadastrado e ativo para o pagamento de R$ 1.240,00.\n\n"
-            "Obrigado pela comunicação.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Confirmar que débito automático de R$ 1.240,00 (apólice "
+            "SV-2025-44123, venc. 01/03/2026) está ativo. Arquivar para referência."
         ),
     ),
     _improd(
@@ -943,12 +884,8 @@ SEED_FIXTURES = [
         0.91,
         940,
         (
-            "Prezados,\n\n"
-            "Agradecemos a comunicação sobre o novo recurso de PIX Agendado. A "
-            "funcionalidade de programação com data futura será útil para nossos "
-            "pagamentos recorrentes.\n\n"
-            "Atualizaremos o app para a versão 4.2 conforme indicado.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Arquivar notificação sobre PIX Agendado (app v4.2) para "
+            "referência. Nenhuma ação imediata necessária."
         ),
     ),
     _improd(
@@ -967,12 +904,9 @@ SEED_FIXTURES = [
         0.70,
         2480,
         (
-            "Prezados,\n\n"
-            "Agradecemos o envio do boletim tributário de fevereiro 2026. As "
-            "informações sobre as alterações em PIS/COFINS, Refis para MEIs e "
-            "alíquotas de IOF foram encaminhadas à nossa área fiscal.\n\n"
-            "Continuem enviando as atualizações mensais.\n\n"
-            "Atenciosamente,\n[Seu Nome]"
+            "Ação interna: Encaminhar boletim tributário de fevereiro 2026 "
+            "(PIS/COFINS, Refis MEIs, IOF) à área fiscal para ciência e "
+            "eventual adequação dos processos internos."
         ),
     ),
 ]
