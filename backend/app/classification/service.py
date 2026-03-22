@@ -5,7 +5,7 @@ from unicodedata import normalize as _unorm
 from huggingface_hub import AsyncInferenceClient, InferenceTimeoutError
 from huggingface_hub.errors import HfHubHTTPError
 
-MODEL_ID = "facebook/bart-large-mnli"
+MODEL_ID = "joeddav/xlm-roberta-large-xnli"
 CANDIDATE_LABELS = ["produtivo", "improdutivo"]
 
 _EXPLANATIONS = {
