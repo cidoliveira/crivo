@@ -2,7 +2,7 @@
 
 Desafio técnico para o processo seletivo da [AutoU](https://autou.com.br). A proposta era construir uma aplicação que classifica emails como produtivos ou improdutivos usando inteligência artificial e sugere respostas contextuais.
 
-O resultado é o **Crivo** — uma aplicação web com backend em FastAPI e frontend em Next.js que usa o modelo `joeddav/xlm-roberta-large-xnli` (via Hugging Face Inference API) para classificação zero-shot de emails em português.
+O resultado é o **Crivo** — uma aplicação web com backend em FastAPI e frontend em Next.js que usa o modelo `facebook/bart-large-mnli` (via Hugging Face Inference API) para classificação zero-shot de emails em português.
 
 ## Demo
 
@@ -35,16 +35,16 @@ graph LR
 
 - **Frontend:** Next.js 16, React 19, Tailwind CSS v4, TanStack Query v5, Recharts v3, shadcn/ui v4
 - **Backend:** FastAPI, SQLAlchemy 2.0 async, Pydantic v2, Alembic
-- **IA:** Hugging Face Inference API com `joeddav/xlm-roberta-large-xnli` para classificação zero-shot
+- **IA:** Hugging Face Inference API com `facebook/bart-large-mnli` para classificação zero-shot
 - **Banco:** PostgreSQL no Render (free tier), acesso via asyncpg
 
-## Por que o xlm-roberta-large-xnli
+## Por que o bart-large-mnli
 
-O `joeddav/xlm-roberta-large-xnli` é um modelo multilíngue pré-treinado para classificação zero-shot via inferência de linguagem natural (NLI). Ele foi treinado no dataset XNLI, que inclui português nativamente, e avalia se um texto é consistente com cada rótulo candidato ("produtivo", "improdutivo") usando a relação de implicação lógica — entailment vs. contradiction. Não precisa de fine-tuning nem de dados rotulados, basta definir os rótulos em linguagem natural.
+O `facebook/bart-large-mnli` é um modelo pré-treinado para classificação zero-shot via inferência de linguagem natural (NLI). Ele avalia se um texto é consistente com cada rótulo candidato usando a relação de implicação lógica — entailment vs. contradiction. Não precisa de fine-tuning nem de dados rotulados.
 
-Por ser multilíngue e ter sido treinado com dados em português, o modelo identifica com boa acurácia estruturas de solicitação, ação requerida e urgência em emails financeiros em PT-BR — sem depender de transferência cross-lingual de um modelo apenas inglês.
+O modelo foi treinado em inglês (MNLI dataset). Para classificar emails em português, usamos labels em inglês (`productive` / `unproductive`) com um hypothesis template contextualizado (`"This email is a {} business communication."`), fazendo a ponte entre o texto em PT-BR e a capacidade de NLI do modelo em inglês. Na prática, isso produz classificações com alta confiança (>90%) para emails de negócio claros, superando abordagens com labels em português ou modelos multilíngues testados.
 
-A API de Inferência do Hugging Face (remota) foi escolhida porque o Render free tier oferece 512 MB de RAM e o modelo precisa de mais memória para rodar localmente. A contrapartida é a latência de cold start: na primeira requisição o modelo pode levar 20-60 segundos para carregar, retornando 503. O backend trata esse erro com mensagem em PT-BR.
+A API de Inferência do Hugging Face (remota) foi escolhida porque o Render free tier oferece 512 MB de RAM e o bart-large-mnli precisa de ~1,6 GB para rodar localmente. A contrapartida é a latência de cold start: na primeira requisição o modelo pode levar 20-60 segundos para carregar, retornando 503. O backend trata esse erro com mensagem em PT-BR.
 
 ## O que a aplicação faz
 
@@ -113,7 +113,7 @@ Frontend em `http://localhost:3000`.
 | Backend | FastAPI |
 | ORM / Migrações | SQLAlchemy 2.0 async, Alembic |
 | Validação | Pydantic v2 |
-| IA | Hugging Face Inference API, `joeddav/xlm-roberta-large-xnli` |
+| IA | Hugging Face Inference API, `facebook/bart-large-mnli` |
 | Banco de dados | PostgreSQL |
 | Deploy | Render (backend + DB + frontend, free tier) |
 

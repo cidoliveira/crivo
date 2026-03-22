@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 _BASE = datetime(2026, 2, 17, tzinfo=timezone.utc)
 
-_MODEL = "joeddav/xlm-roberta-large-xnli"
+_MODEL = "facebook/bart-large-mnli"
 
 
 def _email(i: int, subject: str, body: str, sender: str) -> dict:

@@ -5,8 +5,10 @@ from unicodedata import normalize as _unorm
 from huggingface_hub import AsyncInferenceClient, InferenceTimeoutError
 from huggingface_hub.errors import HfHubHTTPError
 
-MODEL_ID = "joeddav/xlm-roberta-large-xnli"
-CANDIDATE_LABELS = ["produtivo", "improdutivo"]
+MODEL_ID = "facebook/bart-large-mnli"
+CANDIDATE_LABELS = ["productive", "unproductive"]
+HYPOTHESIS_TEMPLATE = "This email is a {} business communication."
+_LABEL_MAP = {"productive": "Produtivo", "unproductive": "Improdutivo"}
 
 _EXPLANATIONS = {
     "Produtivo": (
@@ -329,6 +331,7 @@ async def classify_email_text(
             candidate_labels=CANDIDATE_LABELS,
             multi_label=False,
             model=MODEL_ID,
+            hypothesis_template=HYPOTHESIS_TEMPLATE,
         )
     except InferenceTimeoutError as exc:
         raise ValueError(
@@ -350,7 +353,7 @@ async def classify_email_text(
 
     # result is a list sorted descending by score; first element is the winner
     top = result[0]
-    label = "Produtivo" if top["label"] == "produtivo" else "Improdutivo"
+    label = _LABEL_MAP.get(top["label"], "Improdutivo")
     confidence = float(top["score"])
 
     return label, confidence, elapsed_ms
