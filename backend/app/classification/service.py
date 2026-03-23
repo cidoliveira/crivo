@@ -6,9 +6,15 @@ from huggingface_hub import AsyncInferenceClient, InferenceTimeoutError
 from huggingface_hub.errors import HfHubHTTPError
 
 MODEL_ID = "facebook/bart-large-mnli"
-CANDIDATE_LABELS = ["productive", "unproductive"]
-HYPOTHESIS_TEMPLATE = "This email is a {} business communication."
-_LABEL_MAP = {"productive": "Produtivo", "unproductive": "Improdutivo"}
+CANDIDATE_LABELS = [
+    "a direct request requiring action",
+    "informational or promotional content",
+]
+HYPOTHESIS_TEMPLATE = "This email is {}."
+_LABEL_MAP = {
+    "a direct request requiring action": "Produtivo",
+    "informational or promotional content": "Improdutivo",
+}
 
 SUGGESTION_MODEL = "Qwen/Qwen2.5-72B-Instruct"
 _SUGGESTION_SYSTEM_PROMPT = (
