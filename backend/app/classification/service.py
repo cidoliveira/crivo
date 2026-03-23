@@ -10,6 +10,16 @@ CANDIDATE_LABELS = ["productive", "unproductive"]
 HYPOTHESIS_TEMPLATE = "This email is a {} business communication."
 _LABEL_MAP = {"productive": "Produtivo", "unproductive": "Improdutivo"}
 
+SUGGESTION_MODEL = "Qwen/Qwen2.5-72B-Instruct"
+_SUGGESTION_SYSTEM_PROMPT = (
+    "Você é um assistente corporativo do setor financeiro. "
+    "Escreva uma resposta profissional curta (3-5 frases) em português brasileiro "
+    "para o email recebido. A resposta deve ser contextualizada ao conteúdo específico "
+    "do email — mencione os assuntos, valores, datas e solicitações presentes. "
+    "Comece com uma saudação e termine com 'Atenciosamente,\\n[Seu Nome]'. "
+    "Não invente informações que não estejam no email original."
+)
+
 _EXPLANATIONS = {
     "Produtivo": (
         "Este email foi classificado como Produtivo pois apresenta "
@@ -312,6 +322,41 @@ def _build_internal_action(email_type: str, text: str, entities: dict) -> str:
         "Ação interna: Arquivar para referência. "
         "Nenhuma ação imediata necessária."
     )
+
+
+async def generate_ai_suggestion(
+    text: str,
+    label: str,
+    no_reply: bool,
+    hf_client: AsyncInferenceClient,
+    email_type: str = "",
+    entities: dict | None = None,
+) -> str | None:
+    """Generate a contextual response using an LLM. Falls back to None on failure."""
+    if no_reply:
+        return _build_internal_action(
+            email_type, text, entities or extract_entities(text)
+        )
+
+    try:
+        response = await hf_client.chat_completion(
+            model=SUGGESTION_MODEL,
+            messages=[
+                {"role": "system", "content": _SUGGESTION_SYSTEM_PROMPT},
+                {
+                    "role": "user",
+                    "content": (
+                        f"O email foi classificado como {label}. "
+                        f"Escreva uma resposta apropriada:\n\n{text}"
+                    ),
+                },
+            ],
+            max_tokens=300,
+        )
+        content = response.choices[0].message.content
+        return content.strip() if content else None
+    except Exception:
+        return None
 
 
 def build_explanation(label: str, confidence: float) -> str:

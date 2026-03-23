@@ -35,7 +35,7 @@ graph LR
 
 - **Frontend:** Next.js 16, React 19, Tailwind CSS v4, TanStack Query v5, Recharts v3, shadcn/ui v4
 - **Backend:** FastAPI, SQLAlchemy 2.0 async, Pydantic v2, Alembic
-- **IA:** Hugging Face Inference API com `facebook/bart-large-mnli` para classificação zero-shot
+- **IA:** Hugging Face Inference API — `facebook/bart-large-mnli` para classificação zero-shot e `Qwen/Qwen2.5-72B-Instruct` para geração de respostas contextuais
 - **Banco:** PostgreSQL no Render (free tier), acesso via asyncpg
 
 ## Por que o bart-large-mnli
@@ -51,8 +51,8 @@ A API de Inferência do Hugging Face (remota) foi escolhida porque o Render free
 - Classificação individual de email via texto livre ou upload de `.txt` / `.pdf`
 - Classificação em lote com progresso em tempo real via SSE (Server-Sent Events)
 - Detecção de emails automáticos (noreply, "não responda este email") com ação interna sugerida em vez de resposta
-- Sugestões de resposta contextuais por tipo de email (solicitação, proposta, reclamação, agendamento, negociação)
-- Extração de entidades do corpo do email (valores, datas, nomes) para personalizar sugestões
+- Sugestões de resposta geradas por IA (Qwen2.5-72B) com conteúdo contextualizado ao email original
+- Fallback para templates determinísticos caso a geração falhe
 - Dashboard com métricas: total classificado, distribuição por categoria, série temporal diária e histórico paginado
 - 40 emails de exemplo pré-carregáveis para avaliação imediata
 - Tema escuro corporativo

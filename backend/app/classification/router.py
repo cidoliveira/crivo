@@ -16,6 +16,7 @@ from app.classification.service import (
     classify_email_text,
     build_explanation,
     build_suggestion,
+    generate_ai_suggestion,
     detect_no_reply,
     detect_email_type,
     extract_entities,
@@ -54,7 +55,12 @@ async def classify_email(
     await db.flush()
 
     explanation = build_explanation(label, confidence)
-    suggestion = build_suggestion(label, text, "", no_reply, email_type, entities)
+    ai_suggestion = await generate_ai_suggestion(
+        text, label, no_reply, hf_client, email_type, entities,
+    )
+    suggestion = ai_suggestion or build_suggestion(
+        label, text, "", no_reply, email_type, entities,
+    )
 
     clf = Classification(
         email_id=email.id,
@@ -143,7 +149,12 @@ async def classify_batch(
         db.add(email)
         await db.flush()
 
-        suggestion = build_suggestion(label, stripped, "", no_reply, email_type, entities)
+        ai_suggestion = await generate_ai_suggestion(
+            stripped, label, no_reply, hf_client, email_type, entities,
+        )
+        suggestion = ai_suggestion or build_suggestion(
+            label, stripped, "", no_reply, email_type, entities,
+        )
 
         clf = Classification(
             email_id=email.id,
